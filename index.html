@@ -1,0 +1,396 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Pesewa.com - Global Peer-to-Peer Emergency Micro-Lending Platform">
+    <title>Pesewa.com - Emergency Micro-Lending Platform</title>
+    <link rel="manifest" href="manifest.json">
+    <link rel="icon" href="icons/icon-72x72.png">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&family=Montserrat:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <!-- Navigation -->
+    <nav class="navbar">
+        <div class="nav-container">
+            <div class="logo">
+                <img src="data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNDAiIGhlaWdodD0iNDAiIHZpZXdCb3g9IjAgMCA0MCA0MCIgZmlsbD0ibm9uZSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4KPHBhdGggZD0iTTIwIDBDOC45NiAwIDAgOC45NiAwIDIwQzAgMzEuMDQgOC45NiA0MCAyMCA0MEMzMS4wNCA0MCA0MCAzMS4wNCA0MCAyMEM0MCA4Ljk2IDMxLjA0IDAgMjAgMFpNMTkgMTdWMTBIMTJWMTdIMTlWMjJIMTJWMTlIOS4wMDAwMVYyNkgxOVYzMEgyNlYyNkgzNlYxOUgyOVYxN0gyNlYxMEgxOVYxN1pNMjYgMjJWMjVIMjlWMjJIMjZaIiBmaWxsPSIjRkZDNjAwIi8+Cjwvc3ZnPgo=" alt="Pesewa Logo">
+                <span>Pesewa.com</span>
+            </div>
+            <div class="nav-menu">
+                <a href="#" class="nav-link active" data-page="home">Home</a>
+                <a href="#categories" class="nav-link" data-page="categories">Categories</a>
+                <a href="#how-it-works" class="nav-link" data-page="how-it-works">How It Works</a>
+                <a href="#comparison" class="nav-link" data-page="comparison">Why Pesewa?</a>
+                <a href="#" class="nav-link" data-page="dashboard">Dashboard</a>
+                <div class="auth-buttons">
+                    <button id="loginBtn" class="btn btn-outline">Login</button>
+                    <button id="registerBtn" class="btn btn-primary">Get Started</button>
+                </div>
+                <div class="user-menu hidden" id="userMenu">
+                    <div class="user-avatar" id="userAvatar">U</div>
+                    <div class="user-dropdown">
+                        <a href="#" data-page="dashboard">Dashboard</a>
+                        <a href="#" data-page="profile">Profile</a>
+                        <a href="#" id="logoutBtn">Logout</a>
+                    </div>
+                </div>
+            </div>
+            <button class="menu-toggle">
+                <i class="fas fa-bars"></i>
+            </button>
+        </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <section class="hero">
+        <div class="hero-content">
+            <h1 class="hero-title">Emergency Funds When You Need Them Most</h1>
+            <p class="hero-subtitle">Trust-based peer-to-peer micro-lending for life's urgent needs. Borrow from trusted connections, lend with confidence.</p>
+            <div class="hero-actions">
+                <button class="btn btn-primary btn-large" id="heroBorrowBtn">
+                    <i class="fas fa-hand-holding-usd"></i> Borrow Now
+                </button>
+                <button class="btn btn-secondary btn-large" id="heroLendBtn">
+                    <i class="fas fa-users"></i> Become a Lender
+                </button>
+            </div>
+            <div class="stats">
+                <div class="stat">
+                    <span class="stat-number" id="activeLoans">2,847</span>
+                    <span class="stat-label">Active Loans</span>
+                </div>
+                <div class="stat">
+                    <span class="stat-number" id="totalLenders">15,692</span>
+                    <span class="stat-label">Trusted Lenders</span>
+                </div>
+                <div class="stat">
+                    <span class="stat-number" id="successRate">98.7%</span>
+                    <span class="stat-label">Repayment Rate</span>
+                </div>
+            </div>
+        </div>
+        <div class="hero-visual">
+            <div class="floating-cards" id="floatingCards">
+                <!-- Category cards will be generated here -->
+            </div>
+        </div>
+    </section>
+
+    <!-- Categories Section -->
+    <section class="categories" id="categories">
+        <h2 class="section-title">Emergency Loan Categories</h2>
+        <p class="section-subtitle">Borrow specifically for your urgent needs</p>
+        <div class="category-grid" id="categoryGrid">
+            <!-- Categories loaded from app.js -->
+        </div>
+    </section>
+
+    <!-- How It Works -->
+    <section class="how-it-works" id="how-it-works">
+        <h2 class="section-title">How Pesewa Works</h2>
+        <div class="steps">
+            <div class="step">
+                <div class="step-icon">1</div>
+                <h3>Join via Referral</h3>
+                <p>Get invited by someone you trust or provide referrers during registration</p>
+            </div>
+            <div class="step">
+                <div class="step-icon">2</div>
+                <h3>Choose Your Tier</h3>
+                <p>Select Basic, Premium, or Super tier based on your borrowing needs</p>
+            </div>
+            <div class="step">
+                <div class="step-icon">3</div>
+                <h3>Request Loan</h3>
+                <p>Select category, amount, and choose a lender from your group</p>
+            </div>
+            <div class="step">
+                <div class="step-icon">4</div>
+                <h3>Receive Funds</h3>
+                <p>Get disbursement in under 10 minutes through your preferred method</p>
+            </div>
+            <div class="step">
+                <div class="step-icon">5</div>
+                <h3>Repay in 7 Days</h3>
+                <p>10% weekly interest, daily partial payments allowed</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- Tier Calculator -->
+    <section class="calculator">
+        <h2 class="section-title">Loan Calculator</h2>
+        <div class="calculator-container">
+            <div class="tier-selector">
+                <select id="tierSelect" class="tier-dropdown">
+                    <option value="basic">Basic Tier (≤1,500/week)</option>
+                    <option value="premium">Premium Tier (≤5,000/week)</option>
+                    <option value="super">Super Tier (≤20,000/week)</option>
+                </select>
+            </div>
+            <div class="calculator-inputs">
+                <div class="input-group">
+                    <label for="loanAmount">Loan Amount (Local Currency)</label>
+                    <input type="number" id="loanAmount" min="5" max="20000" value="1000">
+                    <div class="range-slider">
+                        <input type="range" id="amountRange" min="5" max="20000" value="1000" step="5">
+                    </div>
+                </div>
+                <div class="input-group">
+                    <label for="loanDuration">Duration (Days)</label>
+                    <select id="loanDuration">
+                        <option value="1">1 Day</option>
+                        <option value="3">3 Days</option>
+                        <option value="7" selected>7 Days</option>
+                    </select>
+                </div>
+            </div>
+            <div class="calculator-results">
+                <div class="result-card">
+                    <h4>Principal Amount</h4>
+                    <p class="result-amount" id="principalAmount">1,000</p>
+                </div>
+                <div class="result-card">
+                    <h4>Weekly Interest (10%)</h4>
+                    <p class="result-amount" id="interestAmount">100</p>
+                </div>
+                <div class="result-card total">
+                    <h4>Total Repayment</h4>
+                    <p class="result-amount" id="totalRepayment">1,100</p>
+                </div>
+                <div class="result-card daily">
+                    <h4>Daily Payment</h4>
+                    <p class="result-amount" id="dailyPayment">157.14</p>
+                </div>
+            </div>
+            <button class="btn btn-primary" id="applyNowBtn">Apply Now</button>
+        </div>
+    </section>
+
+    <!-- Comparison Section -->
+    <section class="comparison" id="comparison">
+        <h2 class="section-title">Why Pesewa Stands Out</h2>
+        <div class="comparison-table">
+            <table>
+                <thead>
+                    <tr>
+                        <th>Feature</th>
+                        <th>Pesewa.com</th>
+                        <th>Zidisha</th>
+                        <th>Fuliza</th>
+                        <th>Traditional Lenders</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>Trust Model</td>
+                        <td><i class="fas fa-check success"></i> Human Referral Network</td>
+                        <td><i class="fas fa-times error"></i> Algorithmic</td>
+                        <td><i class="fas fa-times error"></i> Teleco-based</td>
+                        <td><i class="fas fa-times error"></i> Credit Scoring</td>
+                    </tr>
+                    <tr>
+                        <td>Default Rate</td>
+                        <td><span class="badge success">2.3%</span></td>
+                        <td><span class="badge">8.7%</span></td>
+                        <td><span class="badge">12.4%</span></td>
+                        <td><span class="badge">15-25%</span></td>
+                    </tr>
+                    <tr>
+                        <td>Loan Purpose</td>
+                        <td><i class="fas fa-check success"></i> Specific Utilities Only</td>
+                        <td><i class="fas fa-times error"></i> General Purpose</td>
+                        <td><i class="fas fa-times error"></i> General Purpose</td>
+                        <td><i class="fas fa-times error"></i> General Purpose</td>
+                    </tr>
+                    <tr>
+                        <td>Cross-Group Flexibility</td>
+                        <td><i class="fas fa-check success"></i> Yes (4 Groups)</td>
+                        <td><i class="fas fa-times error"></i> No</td>
+                        <td><i class="fas fa-times error"></i> No</td>
+                        <td><i class="fas fa-times error"></i> No</td>
+                    </tr>
+                    <tr>
+                        <td>Dual Role</td>
+                        <td><i class="fas fa-check success"></i> Borrower & Lender</td>
+                        <td><i class="fas fa-times error"></i> Separate</td>
+                        <td><i class="fas fa-times error"></i> Borrower Only</td>
+                        <td><i class="fas fa-times error"></i> Borrower Only</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="footer-container">
+            <div class="footer-section">
+                <div class="logo">
+                    <img src="data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMzAiIGhlaWdodD0iMzAiIHZpZXdCb3g9IjAgMCAzMCAzMCIgZmlsbD0ibm9uZSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4KPHBhdGggZD0iTTE1IDBDNi43MTUgMCAwIDYuNzE1IDAgMTVDMCAyMy4yODUgNi43MTUgMzAgMTUgMzBDMjMuMjg1IDMwIDMwIDIzLjI4NSAzMCAxNUMzMCA2LjcxNSAyMy4yODUgMCAxNSAwWk0xNCAxM1Y4SDhWMTNIMTRWMTZIOFYxNEg2VjE5SDE0VjIySDIwVjE5SDI3VjE0SDIwVjEzSDE3VjhIMTRWMTNaTTIwIDE3VjE4SDIyVjE3SDIwWiIgZmlsbD0iI0ZGQzYwMCIvPgo8L3N2Zz4K" alt="Pesewa Logo">
+                    <span>Pesewa.com</span>
+                </div>
+                <p>Building financial resilience through trusted community networks.</p>
+                <div class="social-links">
+                    <a href="#"><i class="fab fa-facebook"></i></a>
+                    <a href="#"><i class="fab fa-twitter"></i></a>
+                    <a href="#"><i class="fab fa-linkedin"></i></a>
+                    <a href="#"><i class="fab fa-instagram"></i></a>
+                </div>
+            </div>
+            <div class="footer-section">
+                <h4>Country Contacts</h4>
+                <select id="countrySelect" class="country-dropdown">
+                    <option value="kenya">Kenya: +254 709 219 000</option>
+                    <option value="uganda">Uganda: +256 392 175 546</option>
+                    <option value="tanzania">Tanzania: +255 659 073 010</option>
+                    <option value="somalia">Somalia: +252 63 0000000</option>
+                    <option value="rwanda">Rwanda: +250 791 590 801</option>
+                    <option value="congo">Congo: +243 81 000 0000</option>
+                    <option value="burundi">Burundi: +257 79 000 000</option>
+                    <option value="nigeria">Nigeria: +234 800 000 0000</option>
+                    <option value="ghana">Ghana: +233 24 000 0000</option>
+                    <option value="south-africa">South Africa: +27 11 000 0000</option>
+                    <option value="ethiopia">Ethiopia: +251 91 000 000</option>
+                </select>
+                <p class="contact-email">Email: info@pesewa.com</p>
+            </div>
+            <div class="footer-section">
+                <h4>Quick Links</h4>
+                <ul>
+                    <li><a href="#" data-page="dashboard">Dashboard</a></li>
+                    <li><a href="#" data-page="groups">Groups</a></li>
+                    <li><a href="#" data-page="lending">Lend</a></li>
+                    <li><a href="#" data-page="borrowing">Borrow</a></li>
+                    <li><a href="#" data-page="blacklist">Blacklist</a></li>
+                </ul>
+            </div>
+            <div class="footer-section">
+                <h4>Legal</h4>
+                <ul>
+                    <li><a href="#">Privacy Policy</a></li>
+                    <li><a href="#">Terms of Service</a></li>
+                    <li><a href="#">Cookie Policy</a></li>
+                    <li><a href="#">Disclaimer</a></li>
+                </ul>
+            </div>
+        </div>
+        <div class="footer-bottom">
+            <p>&copy; 2024 Pesewa.com. All rights reserved. Building trust, one loan at a time.</p>
+        </div>
+    </footer>
+
+    <!-- Modals -->
+    <div class="modal" id="loginModal">
+        <div class="modal-content">
+            <span class="close">&times;</span>
+            <h3>Login to Pesewa</h3>
+            <form id="loginForm">
+                <div class="form-group">
+                    <label for="loginEmail">Email or Phone</label>
+                    <input type="text" id="loginEmail" required>
+                </div>
+                <div class="form-group">
+                    <label for="loginPassword">Password</label>
+                    <input type="password" id="loginPassword" required>
+                </div>
+                <button type="submit" class="btn btn-primary">Login</button>
+                <p class="text-center">or</p>
+                <button type="button" class="btn btn-outline" id="otpLoginBtn">
+                    <i class="fas fa-mobile-alt"></i> Login with OTP
+                </button>
+            </form>
+        </div>
+    </div>
+
+    <div class="modal" id="registerModal">
+        <div class="modal-content">
+            <span class="close">&times;</span>
+            <h3>Join Pesewa</h3>
+            <form id="registerForm">
+                <div class="form-group">
+                    <label for="regName">Full Name *</label>
+                    <input type="text" id="regName" required>
+                </div>
+                <div class="form-group">
+                    <label for="regEmail">Email (Optional)</label>
+                    <input type="email" id="regEmail">
+                </div>
+                <div class="form-group">
+                    <label for="regPhone">Phone Number *</label>
+                    <input type="tel" id="regPhone" required>
+                </div>
+                <div class="form-group">
+                    <label for="regCountry">Country *</label>
+                    <select id="regCountry" required>
+                        <option value="">Select Country</option>
+                        <option value="kenya">Kenya</option>
+                        <option value="uganda">Uganda</option>
+                        <option value="tanzania">Tanzania</option>
+                        <option value="rwanda">Rwanda</option>
+                        <option value="congo">Congo</option>
+                        <option value="burundi">Burundi</option>
+                        <option value="nigeria">Nigeria</option>
+                        <option value="ghana">Ghana</option>
+                        <option value="south-africa">South Africa</option>
+                        <option value="ethiopia">Ethiopia</option>
+                        <option value="somalia">Somalia</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="regRole">I want to: *</label>
+                    <select id="regRole" required>
+                        <option value="">Select Role</option>
+                        <option value="borrower">Borrow Only</option>
+                        <option value="lender">Lend Only</option>
+                        <option value="both">Both Borrow and Lend</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label>Tier Selection *</label>
+                    <select id="regTier" required>
+                        <option value="">Select Tier</option>
+                        <option value="basic">Basic (≤1,500/week)</option>
+                        <option value="premium">Premium (≤5,000/week)</option>
+                        <option value="super">Super (≤20,000/week)</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label>Referrer 1 (Name & Phone) *</label>
+                    <input type="text" placeholder="Name" id="ref1Name" required>
+                    <input type="tel" placeholder="Phone" id="ref1Phone" required>
+                </div>
+                <div class="form-group">
+                    <label>Referrer 2 (Name & Phone) *</label>
+                    <input type="text" placeholder="Name" id="ref2Name" required>
+                    <input type="tel" placeholder="Phone" id="ref2Phone" required>
+                </div>
+                <div class="form-group">
+                    <label for="regPassword">Password *</label>
+                    <input type="password" id="regPassword" required minlength="6">
+                </div>
+                <button type="submit" class="btn btn-primary">Create Account</button>
+            </form>
+        </div>
+    </div>
+
+    <!-- Page Container -->
+    <div class="page-container hidden" id="pageContainer">
+        <!-- Pages loaded dynamically -->
+    </div>
+
+    <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-database.js"></script>
+    <script src="app.js"></script>
+    <script>
+        if ('serviceWorker' in navigator) {
+            navigator.serviceWorker.register('service-worker.js');
+        }
+    </script>
+</body>
+</html>
