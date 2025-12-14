@@ -1,0 +1,564 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Subscription - Pesewa Micro-Lending</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.8.1/font/bootstrap-icons.css">
+    <style>
+        :root {
+            --primary-color: #2E8B57;
+            --secondary-color: #FFD700;
+        }
+        .subscription-card {
+            border-radius: 16px;
+            border: none;
+            transition: all 0.3s ease;
+            overflow: hidden;
+        }
+        .subscription-card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 15px 30px rgba(0,0,0,0.1);
+        }
+        .popular-badge {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            background: var(--secondary-color);
+            color: #000;
+            padding: 5px 15px;
+            border-radius: 20px;
+            font-weight: bold;
+            font-size: 12px;
+        }
+        .plan-header {
+            padding: 40px 20px;
+            text-align: center;
+        }
+        .price {
+            font-size: 48px;
+            font-weight: bold;
+            color: var(--primary-color);
+        }
+        .period {
+            color: #6c757d;
+            font-size: 14px;
+        }
+        .feature-list {
+            list-style: none;
+            padding: 0;
+        }
+        .feature-list li {
+            padding: 10px 0;
+            border-bottom: 1px solid #f0f0f0;
+        }
+        .feature-list li:last-child {
+            border-bottom: none;
+        }
+        .feature-list i {
+            color: var(--primary-color);
+            margin-right: 10px;
+        }
+        .btn-subscribe {
+            padding: 12px 40px;
+            border-radius: 30px;
+            font-weight: bold;
+            transition: all 0.3s;
+        }
+        .current-plan {
+            border: 3px solid var(--primary-color);
+            position: relative;
+        }
+        .current-plan-badge {
+            position: absolute;
+            top: 15px;
+            left: 15px;
+            background: var(--primary-color);
+            color: white;
+            padding: 5px 15px;
+            border-radius: 20px;
+            font-size: 12px;
+        }
+        .meter {
+            height: 8px;
+            border-radius: 4px;
+            background: #e9ecef;
+            overflow: hidden;
+        }
+        .meter-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #2E8B57 0%, #1E5631 100%);
+        }
+    </style>
+</head>
+<body>
+    <div class="container-fluid">
+        <div class="row">
+            <!-- Sidebar (Same as dashboard) -->
+            <nav class="col-md-3 col-lg-2 d-md-block sidebar collapse" style="background: linear-gradient(180deg, #1E5631 0%, #2E8B57 100%); color: white;">
+                <div class="position-sticky pt-3">
+                    <div class="d-flex align-items-center mb-4 px-3">
+                        <img src="https://via.placeholder.com/40x40" alt="Logo" class="me-2">
+                        <h5 class="mb-0">Pesewa</h5>
+                    </div>
+                    
+                    <ul class="nav flex-column">
+                        <li class="nav-item">
+                            <a class="nav-link" href="dashboard.html">
+                                <i class="bi bi-speedometer2 me-2"></i>
+                                Dashboard
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="profile.html">
+                                <i class="bi bi-person me-2"></i>
+                                Profile
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="groups.html">
+                                <i class="bi bi-people me-2"></i>
+                                Groups
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="lending.html">
+                                <i class="bi bi-cash-coin me-2"></i>
+                                Lending
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="borrowing.html">
+                                <i class="bi bi-wallet2 me-2"></i>
+                                Borrowing
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link active" href="subscription.html">
+                                <i class="bi bi-gem me-2"></i>
+                                Subscription
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="notification.html">
+                                <i class="bi bi-bell me-2"></i>
+                                Notifications
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="analytics.html">
+                                <i class="bi bi-graph-up me-2"></i>
+                                Analytics
+                            </a>
+                        </li>
+                    </ul>
+                </div>
+            </nav>
+
+            <!-- Main Content -->
+            <main class="col-md-9 ms-sm-auto col-lg-10 px-md-4 py-4">
+                <div class="d-flex justify-content-between align-items-center mb-4">
+                    <h2 class="h3">Subscription Plans</h2>
+                    <div>
+                        <span class="badge bg-success me-2">Current Plan: Premium</span>
+                        <small class="text-muted">Renews: 15 June 2024</small>
+                    </div>
+                </div>
+
+                <!-- Current Plan Status -->
+                <div class="card mb-4 border-success">
+                    <div class="card-header bg-success bg-opacity-10">
+                        <h5 class="mb-0 text-success">Your Current Plan</h5>
+                    </div>
+                    <div class="card-body">
+                        <div class="row align-items-center">
+                            <div class="col-md-8">
+                                <div class="d-flex align-items-center">
+                                    <div class="bg-success bg-opacity-25 p-3 rounded-circle me-3">
+                                        <i class="bi bi-gem text-success fs-2"></i>
+                                    </div>
+                                    <div>
+                                        <h4 class="mb-1">Premium Plan</h4>
+                                        <p class="text-muted mb-0">All features unlocked • ¢49.99/month</p>
+                                        <small class="text-success">Next billing: 15 June 2024 • Auto-renewal ON</small>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-4 text-end">
+                                <button class="btn btn-outline-success me-2">Manage Subscription</button>
+                                <button class="btn btn-danger" data-bs-toggle="modal" data-bs-target="#cancelModal">Cancel</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Usage Statistics -->
+                <div class="row g-3 mb-4">
+                    <div class="col-md-3">
+                        <div class="card">
+                            <div class="card-body">
+                                <h6 class="text-muted">Loans This Month</h6>
+                                <div class="d-flex justify-content-between align-items-center">
+                                    <h3 class="mb-0">5/10</h3>
+                                    <div class="meter" style="width: 100px;">
+                                        <div class="meter-fill" style="width: 50%"></div>
+                                    </div>
+                                </div>
+                                <small class="text-muted">50% of limit used</small>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-3">
+                        <div class="card">
+                            <div class="card-body">
+                                <h6 class="text-muted">Group Limits</h6>
+                                <div class="d-flex justify-content-between align-items-center">
+                                    <h3 class="mb-0">3/5</h3>
+                                    <div class="meter" style="width: 100px;">
+                                        <div class="meter-fill" style="width: 60%"></div>
+                                    </div>
+                                </div>
+                                <small class="text-muted">2 groups remaining</small>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-3">
+                        <div class="card">
+                            <div class="card-body">
+                                <h6 class="text-muted">Monthly Transactions</h6>
+                                <div class="d-flex justify-content-between align-items-center">
+                                    <h3 class="mb-0">42/∞</h3>
+                                    <i class="bi bi-infinity text-success fs-4"></i>
+                                </div>
+                                <small class="text-success">Unlimited transactions</small>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-3">
+                        <div class="card">
+                            <div class="card-body">
+                                <h6 class="text-muted">Priority Support</h6>
+                                <div class="d-flex justify-content-between align-items-center">
+                                    <h3 class="mb-0">Active</h3>
+                                    <i class="bi bi-headset text-success fs-4"></i>
+                                </div>
+                                <small class="text-success">24/7 support available</small>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Subscription Plans -->
+                <h4 class="mb-3">Upgrade Your Plan</h4>
+                <div class="row g-4 mb-4">
+                    <!-- Basic Plan -->
+                    <div class="col-lg-4">
+                        <div class="card subscription-card h-100">
+                            <div class="plan-header bg-light">
+                                <h5 class="card-title">Basic</h5>
+                                <div class="price">¢9.99<span class="period">/month</span></div>
+                                <p class="text-muted">Essential features for beginners</p>
+                            </div>
+                            <div class="card-body">
+                                <ul class="feature-list">
+                                    <li><i class="bi bi-check-circle"></i> Up to 3 loans per month</li>
+                                    <li><i class="bi bi-check-circle"></i> 2 groups maximum</li>
+                                    <li><i class="bi bi-check-circle"></i> Standard support</li>
+                                    <li><i class="bi bi-check-circle"></i> Basic analytics</li>
+                                    <li><i class="bi bi-x-circle text-muted"></i> <del>Priority support</del></li>
+                                    <li><i class="bi bi-x-circle text-muted"></i> <del>Advanced analytics</del></li>
+                                    <li><i class="bi bi-x-circle text-muted"></i> <del>Debt collector access</del></li>
+                                </ul>
+                            </div>
+                            <div class="card-footer bg-white border-0 text-center pb-4">
+                                <button class="btn btn-outline-primary btn-subscribe">Choose Basic</button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Premium Plan -->
+                    <div class="col-lg-4">
+                        <div class="card subscription-card h-100 current-plan">
+                            <div class="current-plan-badge">Current Plan</div>
+                            <div class="popular-badge">MOST POPULAR</div>
+                            <div class="plan-header" style="background: linear-gradient(135deg, #2E8B57 0%, #1E5631 100%); color: white;">
+                                <h5 class="card-title">Premium</h5>
+                                <div class="price" style="color: white;">¢49.99<span class="period" style="color: rgba(255,255,255,0.8);">/month</span></div>
+                                <p>Complete lending toolkit</p>
+                            </div>
+                            <div class="card-body">
+                                <ul class="feature-list">
+                                    <li><i class="bi bi-check-circle"></i> Up to 10 loans per month</li>
+                                    <li><i class="bi bi-check-circle"></i> 5 groups maximum</li>
+                                    <li><i class="bi bi-check-circle"></i> Priority support</li>
+                                    <li><i class="bi bi-check-circle"></i> Advanced analytics</li>
+                                    <li><i class="bi bi-check-circle"></i> Debt collector access</li>
+                                    <li><i class="bi bi-check-circle"></i> Custom interest rates</li>
+                                    <li><i class="bi bi-check-circle"></i> API access</li>
+                                </ul>
+                            </div>
+                            <div class="card-footer bg-white border-0 text-center pb-4">
+                                <button class="btn btn-success btn-subscribe" disabled>Current Plan</button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Business Plan -->
+                    <div class="col-lg-4">
+                        <div class="card subscription-card h-100">
+                            <div class="plan-header bg-warning bg-opacity-10">
+                                <h5 class="card-title">Business</h5>
+                                <div class="price">¢199.99<span class="period">/month</span></div>
+                                <p class="text-muted">For professional lenders</p>
+                            </div>
+                            <div class="card-body">
+                                <ul class="feature-list">
+                                    <li><i class="bi bi-check-circle"></i> Unlimited loans</li>
+                                    <li><i class="bi bi-check-circle"></i> Unlimited groups</li>
+                                    <li><i class="bi bi-check-circle"></i> 24/7 priority support</li>
+                                    <li><i class="bi bi-check-circle"></i> Premium analytics</li>
+                                    <li><i class="bi bi-check-circle"></i> Dedicated account manager</li>
+                                    <li><i class="bi bi-check-circle"></i> White-label solution</li>
+                                    <li><i class="bi bi-check-circle"></i> Bulk operations</li>
+                                </ul>
+                            </div>
+                            <div class="card-footer bg-white border-0 text-center pb-4">
+                                <button class="btn btn-warning btn-subscribe">Choose Business</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Payment History -->
+                <div class="card">
+                    <div class="card-header">
+                        <h5 class="mb-0">Payment History</h5>
+                    </div>
+                    <div class="card-body">
+                        <div class="table-responsive">
+                            <table class="table table-hover">
+                                <thead>
+                                    <tr>
+                                        <th>Date</th>
+                                        <th>Description</th>
+                                        <th>Amount</th>
+                                        <th>Payment Method</th>
+                                        <th>Status</th>
+                                        <th>Receipt</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr>
+                                        <td>2024-05-15</td>
+                                        <td>Premium Plan Subscription</td>
+                                        <td class="fw-bold">¢49.99</td>
+                                        <td>Mobile Money (MTN)</td>
+                                        <td><span class="badge bg-success">Completed</span></td>
+                                        <td>
+                                            <button class="btn btn-sm btn-outline-secondary">
+                                                <i class="bi bi-download"></i>
+                                            </button>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td>2024-04-15</td>
+                                        <td>Premium Plan Subscription</td>
+                                        <td class="fw-bold">¢49.99</td>
+                                        <td>Mobile Money (MTN)</td>
+                                        <td><span class="badge bg-success">Completed</span></td>
+                                        <td>
+                                            <button class="btn btn-sm btn-outline-secondary">
+                                                <i class="bi bi-download"></i>
+                                            </button>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td>2024-03-15</td>
+                                        <td>Upgrade from Basic to Premium</td>
+                                        <td class="fw-bold">¢40.00</td>
+                                        <td>Mobile Money (AirtelTigo)</td>
+                                        <td><span class="badge bg-success">Completed</span></td>
+                                        <td>
+                                            <button class="btn btn-sm btn-outline-secondary">
+                                                <i class="bi bi-download"></i>
+                                            </button>
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Billing Information -->
+                <div class="card mt-4">
+                    <div class="card-header d-flex justify-content-between align-items-center">
+                        <h5 class="mb-0">Billing Information</h5>
+                        <button class="btn btn-outline-primary btn-sm" data-bs-toggle="modal" data-bs-target="#updateBillingModal">
+                            <i class="bi bi-pencil me-1"></i>Update
+                        </button>
+                    </div>
+                    <div class="card-body">
+                        <div class="row">
+                            <div class="col-md-6">
+                                <h6>Primary Payment Method</h6>
+                                <div class="d-flex align-items-center mt-2">
+                                    <div class="bg-primary bg-opacity-10 p-3 rounded-circle me-3">
+                                        <i class="bi bi-phone text-primary fs-4"></i>
+                                    </div>
+                                    <div>
+                                        <div class="fw-bold">Mobile Money (MTN)</div>
+                                        <small class="text-muted">024 123 4567</small>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <h6>Billing Address</h6>
+                                <address class="mt-2">
+                                    <strong>Kwame Appiah</strong><br>
+                                    123 Market Street<br>
+                                    Adenta, Accra<br>
+                                    Ghana
+                                </address>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </main>
+        </div>
+    </div>
+
+    <!-- Cancel Subscription Modal -->
+    <div class="modal fade" id="cancelModal" tabindex="-1">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Cancel Subscription</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <p>Are you sure you want to cancel your Premium subscription?</p>
+                    <div class="alert alert-warning">
+                        <i class="bi bi-exclamation-triangle me-2"></i>
+                        <strong>Important:</strong> You will lose access to premium features immediately. You can resubscribe at any time.
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Reason for cancellation (optional)</label>
+                        <select class="form-select">
+                            <option value="">Select a reason</option>
+                            <option value="too-expensive">Too expensive</option>
+                            <option value="missing-features">Missing features</option>
+                            <option value="not-using">Not using the service</option>
+                            <option value="switching">Switching to another service</option>
+                            <option value="other">Other</option>
+                        </select>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Additional comments</label>
+                        <textarea class="form-control" rows="3" placeholder="Tell us how we can improve..."></textarea>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Keep Subscription</button>
+                    <button type="button" class="btn btn-danger" onclick="cancelSubscription()">Cancel Subscription</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Update Billing Modal -->
+    <div class="modal fade" id="updateBillingModal" tabindex="-1">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Update Billing Information</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <form id="billingForm">
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                <label class="form-label">Full Name</label>
+                                <input type="text" class="form-control" value="Kwame Appiah" required>
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <label class="form-label">Phone Number</label>
+                                <input type="text" class="form-control" value="0241234567" required>
+                            </div>
+                            <div class="col-12 mb-3">
+                                <label class="form-label">Address</label>
+                                <input type="text" class="form-control" value="123 Market Street" required>
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <label class="form-label">City</label>
+                                <input type="text" class="form-control" value="Adenta" required>
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <label class="form-label">Region</label>
+                                <select class="form-select" required>
+                                    <option value="greater-accra" selected>Greater Accra</option>
+                                    <option value="ashanti">Ashanti</option>
+                                    <option value="western">Western</option>
+                                    <option value="eastern">Eastern</option>
+                                </select>
+                            </div>
+                            <div class="col-12 mb-3">
+                                <label class="form-label">Payment Method</label>
+                                <select class="form-select" required>
+                                    <option value="mtn" selected>MTN Mobile Money</option>
+                                    <option value="airteltigo">AirtelTigo Money</option>
+                                    <option value="vodafone">Vodafone Cash</option>
+                                    <option value="card">Credit/Debit Card</option>
+                                </select>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                    <button type="submit" form="billingForm" class="btn btn-success">Update Information</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        // Handle plan selection
+        document.querySelectorAll('.btn-subscribe').forEach(btn => {
+            btn.addEventListener('click', function() {
+                if (!this.disabled) {
+                    const plan = this.closest('.subscription-card').querySelector('.card-title').textContent;
+                    alert(`You've selected the ${plan} plan. Redirecting to payment...`);
+                    // In production: redirect to payment gateway
+                }
+            });
+        });
+
+        function cancelSubscription() {
+            alert('Your subscription has been cancelled. You will have access until the end of your billing period.');
+            const modal = bootstrap.Modal.getInstance(document.getElementById('cancelModal'));
+            modal.hide();
+        }
+
+        // Handle billing form submission
+        document.getElementById('billingForm')?.addEventListener('submit', function(e) {
+            e.preventDefault();
+            alert('Billing information updated successfully!');
+            const modal = bootstrap.Modal.getInstance(document.getElementById('updateBillingModal'));
+            modal.hide();
+        });
+
+        // Handle receipt downloads
+        document.querySelectorAll('.btn-outline-secondary').forEach(btn => {
+            if (btn.querySelector('.bi-download')) {
+                btn.addEventListener('click', function() {
+                    alert('Downloading receipt...');
+                    // In production: download PDF receipt
+                });
+            }
+        });
+    </script>
+</body>
+</html>

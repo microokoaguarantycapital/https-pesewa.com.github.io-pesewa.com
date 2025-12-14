@@ -1,0 +1,743 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Debt Collectors - Pesewa Micro-Lending</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.8.1/font/bootstrap-icons.css">
+    <style>
+        :root {
+            --primary-color: #2E8B57;
+            --secondary-color: #FFD700;
+        }
+        .collector-card {
+            border-radius: 12px;
+            border: none;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+            transition: transform 0.3s;
+        }
+        .collector-card:hover {
+            transform: translateY(-3px);
+        }
+        .rating-stars {
+            color: #FFD700;
+        }
+        .performance-badge {
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 12px;
+        }
+        .performance-excellent { background: #d4edda; color: #155724; }
+        .performance-good { background: #fff3cd; color: #856404; }
+        .performance-average { background: #f8d7da; color: #721c24; }
+        .status-indicator {
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+            display: inline-block;
+            margin-right: 5px;
+        }
+        .status-online { background-color: #2E8B57; }
+        .status-offline { background-color: #dc3545; }
+        .status-away { background-color: #ffc107; }
+        .case-card {
+            border-left: 4px solid;
+            border-radius: 8px;
+        }
+        .case-new { border-left-color: #6c757d; }
+        .case-assigned { border-left-color: #0d6efd; }
+        .case-inprogress { border-left-color: #ffc107; }
+        .case-resolved { border-left-color: #198754; }
+    </style>
+</head>
+<body>
+    <div class="container-fluid">
+        <div class="row">
+            <!-- Sidebar (Same as dashboard) -->
+            <nav class="col-md-3 col-lg-2 d-md-block sidebar collapse" style="background: linear-gradient(180deg, #1E5631 0%, #2E8B57 100%); color: white;">
+                <div class="position-sticky pt-3">
+                    <div class="d-flex align-items-center mb-4 px-3">
+                        <img src="https://via.placeholder.com/40x40" alt="Logo" class="me-2">
+                        <h5 class="mb-0">Pesewa</h5>
+                    </div>
+                    
+                    <ul class="nav flex-column">
+                        <li class="nav-item">
+                            <a class="nav-link" href="dashboard.html">
+                                <i class="bi bi-speedometer2 me-2"></i>
+                                Dashboard
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="groups.html">
+                                <i class="bi bi-people me-2"></i>
+                                Groups
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="lending.html">
+                                <i class="bi bi-cash-coin me-2"></i>
+                                Lending
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="borrowing.html">
+                                <i class="bi bi-wallet2 me-2"></i>
+                                Borrowing
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="ledger.html">
+                                <i class="bi bi-journal-text me-2"></i>
+                                Ledger
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="blacklist.html">
+                                <i class="bi bi-shield-exclamation me-2"></i>
+                                Blacklist
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link active" href="debt-collectors.html">
+                                <i class="bi bi-person-badge me-2"></i>
+                                Debt Collectors
+                            </a>
+                        </li>
+                    </ul>
+                </div>
+            </nav>
+
+            <!-- Main Content -->
+            <main class="col-md-9 ms-sm-auto col-lg-10 px-md-4 py-4">
+                <div class="d-flex justify-content-between align-items-center mb-4">
+                    <h2 class="h3">Debt Collectors</h2>
+                    <button class="btn btn-success" data-bs-toggle="modal" data-bs-target="#addCollectorModal">
+                        <i class="bi bi-plus-circle me-2"></i>Add Collector
+                    </button>
+                </div>
+
+                <!-- Statistics -->
+                <div class="row g-3 mb-4">
+                    <div class="col-md-3">
+                        <div class="card border-0 bg-light">
+                            <div class="card-body">
+                                <div class="d-flex align-items-center">
+                                    <div class="bg-primary bg-opacity-25 p-3 rounded-circle me-3">
+                                        <i class="bi bi-people-fill text-primary"></i>
+                                    </div>
+                                    <div>
+                                        <h6 class="text-muted mb-0">Active Collectors</h6>
+                                        <h4 class="mb-0">8</h4>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="col-md-3">
+                        <div class="card border-0 bg-light">
+                            <div class="card-body">
+                                <div class="d-flex align-items-center">
+                                    <div class="bg-success bg-opacity-25 p-3 rounded-circle me-3">
+                                        <i class="bi bi-cash-coin text-success"></i>
+                                    </div>
+                                    <div>
+                                        <h6 class="text-muted mb-0">Recovered This Month</h6>
+                                        <h4 class="mb-0">¢24,500</h4>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="col-md-3">
+                        <div class="card border-0 bg-light">
+                            <div class="card-body">
+                                <div class="d-flex align-items-center">
+                                    <div class="bg-warning bg-opacity-25 p-3 rounded-circle me-3">
+                                        <i class="bi bi-clock-history text-warning"></i>
+                                    </div>
+                                    <div>
+                                        <h6 class="text-muted mb-0">Active Cases</h6>
+                                        <h4 class="mb-0">15</h4>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="col-md-3">
+                        <div class="card border-0 bg-light">
+                            <div class="card-body">
+                                <div class="d-flex align-items-center">
+                                    <div class="bg-info bg-opacity-25 p-3 rounded-circle me-3">
+                                        <i class="bi bi-percent text-info"></i>
+                                    </div>
+                                    <div>
+                                        <h6 class="text-muted mb-0">Success Rate</h6>
+                                        <h4 class="mb-0">78%</h4>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Debt Collectors Grid -->
+                <div class="row g-4 mb-4">
+                    <!-- Collector 1 -->
+                    <div class="col-lg-4">
+                        <div class="card collector-card">
+                            <div class="card-body">
+                                <div class="d-flex align-items-start mb-3">
+                                    <img src="https://via.placeholder.com/80" class="rounded-circle me-3" alt="Collector">
+                                    <div class="flex-grow-1">
+                                        <h5 class="card-title mb-1">Kwame Asante</h5>
+                                        <p class="text-muted small mb-2">
+                                            <span class="status-indicator status-online"></span>
+                                            Online • ID: DC-001
+                                        </p>
+                                        <div class="rating-stars mb-2">
+                                            <i class="bi bi-star-fill"></i>
+                                            <i class="bi bi-star-fill"></i>
+                                            <i class="bi bi-star-fill"></i>
+                                            <i class="bi bi-star-fill"></i>
+                                            <i class="bi bi-star-half"></i>
+                                            <span class="text-muted ms-1">4.5</span>
+                                        </div>
+                                        <span class="performance-badge performance-excellent">Excellent</span>
+                                    </div>
+                                </div>
+                                
+                                <div class="mb-3">
+                                    <div class="row">
+                                        <div class="col-6">
+                                            <small class="text-muted">Cases</small>
+                                            <h6 class="mb-0">12</h6>
+                                        </div>
+                                        <div class="col-6">
+                                            <small class="text-muted">Recovered</small>
+                                            <h6 class="mb-0 text-success">¢8,450</h6>
+                                        </div>
+                                    </div>
+                                </div>
+                                
+                                <div class="d-grid gap-2">
+                                    <button class="btn btn-outline-primary">View Profile</button>
+                                    <button class="btn btn-success">Assign Case</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Collector 2 -->
+                    <div class="col-lg-4">
+                        <div class="card collector-card">
+                            <div class="card-body">
+                                <div class="d-flex align-items-start mb-3">
+                                    <img src="https://via.placeholder.com/80" class="rounded-circle me-3" alt="Collector">
+                                    <div class="flex-grow-1">
+                                        <h5 class="card-title mb-1">Akua Mensah</h5>
+                                        <p class="text-muted small mb-2">
+                                            <span class="status-indicator status-away"></span>
+                                            Away • ID: DC-002
+                                        </p>
+                                        <div class="rating-stars mb-2">
+                                            <i class="bi bi-star-fill"></i>
+                                            <i class="bi bi-star-fill"></i>
+                                            <i class="bi bi-star-fill"></i>
+                                            <i class="bi bi-star-fill"></i>
+                                            <i class="bi bi-star"></i>
+                                            <span class="text-muted ms-1">4.0</span>
+                                        </div>
+                                        <span class="performance-badge performance-good">Good</span>
+                                    </div>
+                                </div>
+                                
+                                <div class="mb-3">
+                                    <div class="row">
+                                        <div class="col-6">
+                                            <small class="text-muted">Cases</small>
+                                            <h6 class="mb-0">8</h6>
+                                        </div>
+                                        <div class="col-6">
+                                            <small class="text-muted">Recovered</small>
+                                            <h6 class="mb-0 text-success">¢5,200</h6>
+                                        </div>
+                                    </div>
+                                </div>
+                                
+                                <div class="d-grid gap-2">
+                                    <button class="btn btn-outline-primary">View Profile</button>
+                                    <button class="btn btn-warning">Message</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Collector 3 -->
+                    <div class="col-lg-4">
+                        <div class="card collector-card">
+                            <div class="card-body">
+                                <div class="d-flex align-items-start mb-3">
+                                    <img src="https://via.placeholder.com/80" class="rounded-circle me-3" alt="Collector">
+                                    <div class="flex-grow-1">
+                                        <h5 class="card-title mb-1">Kofi Adjei</h5>
+                                        <p class="text-muted small mb-2">
+                                            <span class="status-indicator status-offline"></span>
+                                            Offline • ID: DC-003
+                                        </p>
+                                        <div class="rating-stars mb-2">
+                                            <i class="bi bi-star-fill"></i>
+                                            <i class="bi bi-star-fill"></i>
+                                            <i class="bi bi-star-fill"></i>
+                                            <i class="bi bi-star"></i>
+                                            <i class="bi bi-star"></i>
+                                            <span class="text-muted ms-1">3.0</span>
+                                        </div>
+                                        <span class="performance-badge performance-average">Average</span>
+                                    </div>
+                                </div>
+                                
+                                <div class="mb-3">
+                                    <div class="row">
+                                        <div class="col-6">
+                                            <small class="text-muted">Cases</small>
+                                            <h6 class="mb-0">5</h6>
+                                        </div>
+                                        <div class="col-6">
+                                            <small class="text-muted">Recovered</small>
+                                            <h6 class="mb-0 text-success">¢2,800</h6>
+                                        </div>
+                                    </div>
+                                </div>
+                                
+                                <div class="d-grid gap-2">
+                                    <button class="btn btn-outline-primary">View Profile</button>
+                                    <button class="btn btn-secondary">Set Offline</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Active Cases -->
+                <div class="card mb-4">
+                    <div class="card-header d-flex justify-content-between align-items-center">
+                        <h5 class="mb-0">Active Debt Collection Cases</h5>
+                        <button class="btn btn-outline-success btn-sm" data-bs-toggle="modal" data-bs-target="#newCaseModal">
+                            <i class="bi bi-plus me-1"></i>New Case
+                        </button>
+                    </div>
+                    <div class="card-body">
+                        <div class="row g-3">
+                            <!-- Case 1 -->
+                            <div class="col-md-6">
+                                <div class="card case-card case-inprogress">
+                                    <div class="card-body">
+                                        <div class="d-flex justify-content-between align-items-start mb-2">
+                                            <div>
+                                                <h6 class="card-title mb-1">Case #DC-2024-015</h6>
+                                                <small class="text-muted">Yaw Boateng • ¢15,450</small>
+                                            </div>
+                                            <span class="badge bg-warning">In Progress</span>
+                                        </div>
+                                        
+                                        <p class="card-text small mb-2">Multiple loan defaults, unresponsive to communication attempts</p>
+                                        
+                                        <div class="d-flex justify-content-between align-items-center">
+                                            <div>
+                                                <small class="text-muted">Assigned to:</small>
+                                                <div class="fw-bold">Kwame Asante</div>
+                                            </div>
+                                            <div class="text-end">
+                                                <small class="text-muted">Days Open:</small>
+                                                <div class="text-danger fw-bold">45</div>
+                                            </div>
+                                        </div>
+                                        
+                                        <div class="progress mt-2" style="height: 6px;">
+                                            <div class="progress-bar bg-warning" style="width: 60%"></div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <!-- Case 2 -->
+                            <div class="col-md-6">
+                                <div class="card case-card case-assigned">
+                                    <div class="card-body">
+                                        <div class="d-flex justify-content-between align-items-start mb-2">
+                                            <div>
+                                                <h6 class="card-title mb-1">Case #DC-2024-014</h6>
+                                                <small class="text-muted">Akwasi Owusu • ¢8,200</small>
+                                            </div>
+                                            <span class="badge bg-primary">Assigned</span>
+                                        </div>
+                                        
+                                        <p class="card-text small mb-2">Business loan default, willing to negotiate payment plan</p>
+                                        
+                                        <div class="d-flex justify-content-between align-items-center">
+                                            <div>
+                                                <small class="text-muted">Assigned to:</small>
+                                                <div class="fw-bold">Akua Mensah</div>
+                                            </div>
+                                            <div class="text-end">
+                                                <small class="text-muted">Days Open:</small>
+                                                <div class="fw-bold">15</div>
+                                            </div>
+                                        </div>
+                                        
+                                        <div class="progress mt-2" style="height: 6px;">
+                                            <div class="progress-bar bg-primary" style="width: 30%"></div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <!-- Case 3 -->
+                            <div class="col-md-6">
+                                <div class="card case-card case-new">
+                                    <div class="card-body">
+                                        <div class="d-flex justify-content-between align-items-start mb-2">
+                                            <div>
+                                                <h6 class="card-title mb-1">Case #DC-2024-013</h6>
+                                                <small class="text-muted">Esi Mensah • ¢3,500</small>
+                                            </div>
+                                            <span class="badge bg-secondary">New</span>
+                                        </div>
+                                        
+                                        <p class="card-text small mb-2">Temporary financial hardship, needs restructuring assistance</p>
+                                        
+                                        <div class="d-flex justify-content-between align-items-center">
+                                            <div>
+                                                <small class="text-muted">Status:</small>
+                                                <div class="fw-bold">Awaiting Assignment</div>
+                                            </div>
+                                            <div class="text-end">
+                                                <small class="text-muted">Days Open:</small>
+                                                <div class="fw-bold">5</div>
+                                            </div>
+                                        </div>
+                                        
+                                        <div class="progress mt-2" style="height: 6px;">
+                                            <div class="progress-bar bg-secondary" style="width: 10%"></div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <!-- Case 4 -->
+                            <div class="col-md-6">
+                                <div class="card case-card case-resolved">
+                                    <div class="card-body">
+                                        <div class="d-flex justify-content-between align-items-start mb-2">
+                                            <div>
+                                                <h6 class="card-title mb-1">Case #DC-2024-012</h6>
+                                                <small class="text-muted">Kofi Asante • ¢1,200</small>
+                                            </div>
+                                            <span class="badge bg-success">Resolved</span>
+                                        </div>
+                                        
+                                        <p class="card-text small mb-2">First-time default, payment plan established</p>
+                                        
+                                        <div class="d-flex justify-content-between align-items-center">
+                                            <div>
+                                                <small class="text-muted">Resolved by:</small>
+                                                <div class="fw-bold">Kofi Adjei</div>
+                                            </div>
+                                            <div class="text-end">
+                                                <small class="text-muted">Recovered:</small>
+                                                <div class="text-success fw-bold">¢600</div>
+                                            </div>
+                                        </div>
+                                        
+                                        <div class="progress mt-2" style="height: 6px;">
+                                            <div class="progress-bar bg-success" style="width: 100%"></div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Performance Metrics -->
+                <div class="card">
+                    <div class="card-header">
+                        <h5 class="mb-0">Collection Performance</h5>
+                    </div>
+                    <div class="card-body">
+                        <div class="row">
+                            <div class="col-lg-8">
+                                <canvas id="performanceChart" height="300"></canvas>
+                            </div>
+                            <div class="col-lg-4">
+                                <div class="list-group">
+                                    <div class="list-group-item d-flex justify-content-between align-items-center">
+                                        Total Cases This Month
+                                        <span class="badge bg-primary rounded-pill">28</span>
+                                    </div>
+                                    <div class="list-group-item d-flex justify-content-between align-items-center">
+                                        Successfully Resolved
+                                        <span class="badge bg-success rounded-pill">22</span>
+                                    </div>
+                                    <div class="list-group-item d-flex justify-content-between align-items-center">
+                                        Average Recovery Time
+                                        <span class="badge bg-info rounded-pill">18 days</span>
+                                    </div>
+                                    <div class="list-group-item d-flex justify-content-between align-items-center">
+                                        Total Amount Recovered
+                                        <span class="badge bg-success rounded-pill">¢24,500</span>
+                                    </div>
+                                    <div class="list-group-item d-flex justify-content-between align-items-center">
+                                        Commission Paid
+                                        <span class="badge bg-warning rounded-pill">¢2,450</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </main>
+        </div>
+    </div>
+
+    <!-- Add Collector Modal -->
+    <div class="modal fade" id="addCollectorModal" tabindex="-1">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Add New Debt Collector</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <form id="addCollectorForm">
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                <label class="form-label">Full Name</label>
+                                <input type="text" class="form-control" placeholder="Enter full name" required>
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <label class="form-label">Phone Number</label>
+                                <input type="text" class="form-control" placeholder="e.g., 0241234567" required>
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <label class="form-label">Email Address</label>
+                                <input type="email" class="form-control" placeholder="email@example.com" required>
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <label class="form-label">Commission Rate (%)</label>
+                                <div class="input-group">
+                                    <input type="number" class="form-control" min="1" max="20" value="10" step="0.5">
+                                    <span class="input-group-text">%</span>
+                                </div>
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <label class="form-label">Region</label>
+                                <select class="form-select" required>
+                                    <option value="">Select region</option>
+                                    <option value="greater-accra">Greater Accra</option>
+                                    <option value="ashanti">Ashanti</option>
+                                    <option value="western">Western</option>
+                                    <option value="eastern">Eastern</option>
+                                    <option value="central">Central</option>
+                                </select>
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <label class="form-label">Experience Level</label>
+                                <select class="form-select" required>
+                                    <option value="">Select level</option>
+                                    <option value="junior">Junior (0-2 years)</option>
+                                    <option value="mid">Mid-level (2-5 years)</option>
+                                    <option value="senior">Senior (5+ years)</option>
+                                </select>
+                            </div>
+                            <div class="col-12 mb-3">
+                                <label class="form-label">Specializations</label>
+                                <div class="form-check form-check-inline">
+                                    <input class="form-check-input" type="checkbox" id="spec1" value="personal">
+                                    <label class="form-check-label" for="spec1">Personal Loans</label>
+                                </div>
+                                <div class="form-check form-check-inline">
+                                    <input class="form-check-input" type="checkbox" id="spec2" value="business">
+                                    <label class="form-check-label" for="spec2">Business Loans</label>
+                                </div>
+                                <div class="form-check form-check-inline">
+                                    <input class="form-check-input" type="checkbox" id="spec3" value="group">
+                                    <label class="form-check-label" for="spec3">Group Loans</label>
+                                </div>
+                                <div class="form-check form-check-inline">
+                                    <input class="form-check-input" type="checkbox" id="spec4" value="legal">
+                                    <label class="form-check-label" for="spec4">Legal Recovery</label>
+                                </div>
+                            </div>
+                            <div class="col-12 mb-3">
+                                <label class="form-label">Notes</label>
+                                <textarea class="form-control" rows="3" placeholder="Additional information about the collector"></textarea>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                    <button type="submit" form="addCollectorForm" class="btn btn-success">Add Collector</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- New Case Modal -->
+    <div class="modal fade" id="newCaseModal" tabindex="-1">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Create New Debt Collection Case</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <form id="newCaseForm">
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                <label class="form-label">Borrower Name</label>
+                                <input type="text" class="form-control" placeholder="Enter borrower name" required>
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <label class="form-label">Phone Number</label>
+                                <input type="text" class="form-control" placeholder="e.g., 0241234567" required>
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <label class="form-label">Amount Owed (¢)</label>
+                                <input type="number" class="form-control" min="0" step="0.01" required>
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <label class="form-label">Loan Type</label>
+                                <select class="form-select" required>
+                                    <option value="">Select type</option>
+                                    <option value="personal">Personal Loan</option>
+                                    <option value="business">Business Loan</option>
+                                    <option value="group">Group Loan</option>
+                                </select>
+                            </div>
+                            <div class="col-12 mb-3">
+                                <label class="form-label">Case Description</label>
+                                <textarea class="form-control" rows="3" placeholder="Describe the debt situation..." required></textarea>
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <label class="form-label">Priority Level</label>
+                                <select class="form-select" required>
+                                    <option value="low">Low</option>
+                                    <option value="medium" selected>Medium</option>
+                                    <option value="high">High</option>
+                                    <option value="urgent">Urgent</option>
+                                </select>
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <label class="form-label">Assign to Collector</label>
+                                <select class="form-select">
+                                    <option value="">Auto-assign</option>
+                                    <option value="dc-001">Kwame Asante</option>
+                                    <option value="dc-002">Akua Mensah</option>
+                                    <option value="dc-003">Kofi Adjei</option>
+                                </select>
+                            </div>
+                            <div class="col-12 mb-3">
+                                <label class="form-label">Supporting Documents</label>
+                                <input type="file" class="form-control" multiple>
+                                <small class="text-muted">Upload loan agreement, communication records, etc.</small>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                    <button type="submit" form="newCaseForm" class="btn btn-success">Create Case</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script>
+        // Initialize performance chart
+        const performanceCtx = document.getElementById('performanceChart').getContext('2d');
+        const performanceChart = new Chart(performanceCtx, {
+            type: 'bar',
+            data: {
+                labels: ['Kwame Asante', 'Akua Mensah', 'Kofi Adjei', 'Yaa Poku', 'Kwabena Owusu'],
+                datasets: [{
+                    label: 'Cases Resolved',
+                    data: [12, 8, 5, 9, 7],
+                    backgroundColor: '#2E8B57'
+                }, {
+                    label: 'Amount Recovered (¢)',
+                    data: [8450, 5200, 2800, 6200, 3800],
+                    backgroundColor: '#FFD700',
+                    yAxisID: 'y1'
+                }]
+            },
+            options: {
+                responsive: true,
+                plugins: {
+                    legend: {
+                        position: 'top',
+                    }
+                },
+                scales: {
+                    y: {
+                        beginAtZero: true,
+                        title: {
+                            display: true,
+                            text: 'Number of Cases'
+                        }
+                    },
+                    y1: {
+                        position: 'right',
+                        beginAtZero: true,
+                        title: {
+                            display: true,
+                            text: 'Amount (¢)'
+                        },
+                        grid: {
+                            drawOnChartArea: false
+                        }
+                    }
+                }
+            }
+        });
+
+        // Handle collector card actions
+        document.querySelectorAll('.collector-card .btn').forEach(btn => {
+            btn.addEventListener('click', function() {
+                const action = this.textContent.trim();
+                if (action === 'View Profile') {
+                    alert('Opening collector profile...');
+                } else if (action === 'Assign Case') {
+                    const newCaseModal = new bootstrap.Modal(document.getElementById('newCaseModal'));
+                    newCaseModal.show();
+                } else if (action === 'Message') {
+                    alert('Opening chat window...');
+                }
+            });
+        });
+
+        // Handle form submissions
+        document.getElementById('addCollectorForm')?.addEventListener('submit', function(e) {
+            e.preventDefault();
+            alert('Debt collector added successfully!');
+            const modal = bootstrap.Modal.getInstance(document.getElementById('addCollectorModal'));
+            modal.hide();
+        });
+
+        document.getElementById('newCaseForm')?.addEventListener('submit', function(e) {
+            e.preventDefault();
+            alert('New debt collection case created!');
+            const modal = bootstrap.Modal.getInstance(document.getElementById('newCaseModal'));
+            modal.hide();
+        });
+    </script>
+</body>
+</html>

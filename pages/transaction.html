@@ -1,0 +1,874 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Transactions - Pesewa Micro-Lending</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.8.1/font/bootstrap-icons.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        :root {
+            --primary-color: #2E8B57;
+            --secondary-color: #FFD700;
+        }
+        .transaction-card {
+            border-radius: 12px;
+            border: none;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+            transition: transform 0.3s;
+        }
+        .transaction-card:hover {
+            transform: translateY(-3px);
+        }
+        .transaction-icon {
+            width: 48px;
+            height: 48px;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 20px;
+        }
+        .transaction-in { border-left: 4px solid #2E8B57; }
+        .transaction-out { border-left: 4px solid #dc3545; }
+        .transaction-group { border-left: 4px solid #0d6efd; }
+        .transaction-fee { border-left: 4px solid #6c757d; }
+        .amount-positive { color: #2E8B57; font-weight: bold; }
+        .amount-negative { color: #dc3545; font-weight: bold; }
+        .filter-badge {
+            padding: 5px 15px;
+            border-radius: 20px;
+            font-size: 12px;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        .filter-badge.active {
+            background: var(--primary-color);
+            color: white;
+        }
+        .date-picker {
+            background: #f8f9fa;
+            border-radius: 8px;
+            padding: 15px;
+        }
+        .summary-card {
+            padding: 20px;
+            border-radius: 12px;
+            color: white;
+        }
+        .summary-income { background: linear-gradient(135deg, #2E8B57 0%, #1E5631 100%); }
+        .summary-expense { background: linear-gradient(135deg, #dc3545 0%, #c82333 100%); }
+        .summary-balance { background: linear-gradient(135deg, #0d6efd 0%, #0b5ed7 100%); }
+        .transaction-detail {
+            border-bottom: 1px solid #e9ecef;
+            padding: 15px 0;
+        }
+        .transaction-detail:last-child {
+            border-bottom: none;
+        }
+        .receipt-preview {
+            border: 2px dashed #dee2e6;
+            border-radius: 8px;
+            padding: 20px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        .receipt-preview:hover {
+            border-color: var(--primary-color);
+            background: #f8fff9;
+        }
+        .search-highlight {
+            background-color: #fff3cd;
+            padding: 2px;
+            border-radius: 3px;
+        }
+        .category-tag {
+            padding: 3px 10px;
+            border-radius: 12px;
+            font-size: 11px;
+            font-weight: bold;
+        }
+        .category-loan { background: #d4edda; color: #155724; }
+        .category-group { background: #cce5ff; color: #004085; }
+        .category-transfer { background: #d1ecf1; color: #0c5460; }
+        .category-fee { background: #e2e3e5; color: #383d41; }
+        .category-interest { background: #fff3cd; color: #856404; }
+    </style>
+</head>
+<body>
+    <div class="container-fluid">
+        <div class="row">
+            <!-- Sidebar -->
+            <nav class="col-md-3 col-lg-2 d-md-block sidebar collapse" style="background: linear-gradient(180deg, #1E5631 0%, #2E8B57 100%); color: white;">
+                <div class="position-sticky pt-3">
+                    <div class="d-flex align-items-center mb-4 px-3">
+                        <img src="https://via.placeholder.com/40x40" alt="Logo" class="me-2">
+                        <h5 class="mb-0">Pesewa</h5>
+                    </div>
+                    
+                    <ul class="nav flex-column">
+                        <li class="nav-item">
+                            <a class="nav-link" href="dashboard.html">
+                                <i class="bi bi-speedometer2 me-2"></i>
+                                Dashboard
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="profile.html">
+                                <i class="bi bi-person me-2"></i>
+                                Profile
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="analytics.html">
+                                <i class="bi bi-graph-up me-2"></i>
+                                Analytics
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="emergency-contact.html">
+                                <i class="bi bi-telephone me-2"></i>
+                                Emergency
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link active" href="transaction.html">
+                                <i class="bi bi-arrow-left-right me-2"></i>
+                                Transactions
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="documentation-upload.html">
+                                <i class="bi bi-cloud-arrow-up me-2"></i>
+                                Documents
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="notification.html">
+                                <i class="bi bi-bell me-2"></i>
+                                Notifications
+                            </a>
+                        </li>
+                    </ul>
+                </div>
+            </nav>
+
+            <!-- Main Content -->
+            <main class="col-md-9 ms-sm-auto col-lg-10 px-md-4 py-4">
+                <div class="d-flex justify-content-between align-items-center mb-4">
+                    <h2 class="h3">Transaction History</h2>
+                    <div>
+                        <button class="btn btn-outline-success me-2" onclick="exportTransactions()">
+                            <i class="bi bi-download me-1"></i>Export
+                        </button>
+                        <button class="btn btn-success" data-bs-toggle="modal" data-bs-target="#newTransactionModal">
+                            <i class="bi bi-plus-circle me-2"></i>New Transaction
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Summary Cards -->
+                <div class="row g-3 mb-4">
+                    <div class="col-md-4">
+                        <div class="summary-card summary-income">
+                            <div class="d-flex align-items-center">
+                                <div class="me-3">
+                                    <i class="bi bi-arrow-down-circle fs-1"></i>
+                                </div>
+                                <div>
+                                    <h6 class="mb-0">Total Income</h6>
+                                    <h3 class="mb-0">¢12,450</h3>
+                                    <small>This month</small>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="col-md-4">
+                        <div class="summary-card summary-expense">
+                            <div class="d-flex align-items-center">
+                                <div class="me-3">
+                                    <i class="bi bi-arrow-up-circle fs-1"></i>
+                                </div>
+                                <div>
+                                    <h6 class="mb-0">Total Expenses</h6>
+                                    <h3 class="mb-0">¢8,230</h3>
+                                    <small>This month</small>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="col-md-4">
+                        <div class="summary-card summary-balance">
+                            <div class="d-flex align-items-center">
+                                <div class="me-3">
+                                    <i class="bi bi-wallet2 fs-1"></i>
+                                </div>
+                                <div>
+                                    <h6 class="mb-0">Net Balance</h6>
+                                    <h3 class="mb-0">¢4,220</h3>
+                                    <small>Current balance</small>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Filter Controls -->
+                <div class="card transaction-card mb-4">
+                    <div class="card-body">
+                        <div class="row">
+                            <div class="col-md-3">
+                                <div class="date-picker">
+                                    <h6 class="mb-2">Date Range</h6>
+                                    <div class="input-group">
+                                        <input type="date" class="form-control" value="2024-05-01">
+                                        <span class="input-group-text">to</span>
+                                        <input type="date" class="form-control" value="2024-05-31">
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <h6 class="mb-2">Transaction Type</h6>
+                                <div class="d-flex flex-wrap gap-2">
+                                    <span class="filter-badge active" data-type="all">All</span>
+                                    <span class="filter-badge" data-type="income">
+                                        <i class="bi bi-arrow-down me-1"></i>Income
+                                    </span>
+                                    <span class="filter-badge" data-type="expense">
+                                        <i class="bi bi-arrow-up me-1"></i>Expense
+                                    </span>
+                                    <span class="filter-badge" data-type="loan">Loans</span>
+                                    <span class="filter-badge" data-type="group">Groups</span>
+                                    <span class="filter-badge" data-type="transfer">Transfers</span>
+                                </div>
+                            </div>
+                            <div class="col-md-3">
+                                <h6 class="mb-2">Search</h6>
+                                <div class="input-group">
+                                    <input type="text" class="form-control" placeholder="Search transactions..." id="transactionSearch">
+                                    <button class="btn btn-outline-secondary">
+                                        <i class="bi bi-search"></i>
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Transaction List -->
+                <div class="row">
+                    <div class="col-lg-8">
+                        <div class="card transaction-card">
+                            <div class="card-header d-flex justify-content-between align-items-center">
+                                <h5 class="mb-0">Recent Transactions</h5>
+                                <span class="badge bg-secondary">Showing 50 of 128 transactions</span>
+                            </div>
+                            <div class="card-body">
+                                <!-- Transaction 1 - Income -->
+                                <div class="transaction-detail transaction-in" data-type="income" data-category="loan">
+                                    <div class="d-flex justify-content-between align-items-start">
+                                        <div class="d-flex">
+                                            <div class="transaction-icon bg-success bg-opacity-25 text-success me-3">
+                                                <i class="bi bi-cash-coin"></i>
+                                            </div>
+                                            <div>
+                                                <h6 class="mb-1">Loan Repayment</h6>
+                                                <div class="d-flex align-items-center">
+                                                    <span class="category-tag category-loan me-2">Loan</span>
+                                                    <small class="text-muted">From: Kofi Mensah</small>
+                                                </div>
+                                                <small class="text-muted">
+                                                    <i class="bi bi-calendar me-1"></i>2024-05-28 • 
+                                                    <i class="bi bi-clock me-1 ms-2"></i>14:30 GMT
+                                                </small>
+                                            </div>
+                                        </div>
+                                        <div class="text-end">
+                                            <div class="amount-positive">+¢500.00</div>
+                                            <small class="text-muted">Balance: ¢8,920.00</small>
+                                            <div class="mt-2">
+                                                <span class="badge bg-success">Completed</span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="mt-2 d-flex justify-content-end">
+                                        <button class="btn btn-sm btn-outline-primary me-2" onclick="viewTransactionDetails()">View</button>
+                                        <button class="btn btn-sm btn-outline-secondary" onclick="downloadReceipt()">Receipt</button>
+                                    </div>
+                                </div>
+
+                                <!-- Transaction 2 - Expense -->
+                                <div class="transaction-detail transaction-out" data-type="expense" data-category="loan">
+                                    <div class="d-flex justify-content-between align-items-start">
+                                        <div class="d-flex">
+                                            <div class="transaction-icon bg-danger bg-opacity-25 text-danger me-3">
+                                                <i class="bi bi-arrow-up-right"></i>
+                                            </div>
+                                            <div>
+                                                <h6 class="mb-1">Loan Disbursement</h6>
+                                                <div class="d-flex align-items-center">
+                                                    <span class="category-tag category-loan me-2">Loan</span>
+                                                    <small class="text-muted">To: Ama Serwaa</small>
+                                                </div>
+                                                <small class="text-muted">
+                                                    <i class="bi bi-calendar me-1"></i>2024-05-27 • 
+                                                    <i class="bi bi-clock me-1 ms-2"></i>11:15 GMT
+                                                </small>
+                                            </div>
+                                        </div>
+                                        <div class="text-end">
+                                            <div class="amount-negative">-¢2,000.00</div>
+                                            <small class="text-muted">Balance: ¢8,420.00</small>
+                                            <div class="mt-2">
+                                                <span class="badge bg-success">Completed</span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="mt-2 d-flex justify-content-end">
+                                        <button class="btn btn-sm btn-outline-primary me-2" onclick="viewTransactionDetails()">View</button>
+                                        <button class="btn btn-sm btn-outline-warning" onclick="disputeTransaction()">Dispute</button>
+                                    </div>
+                                </div>
+
+                                <!-- Transaction 3 - Group -->
+                                <div class="transaction-detail transaction-group" data-type="income" data-category="group">
+                                    <div class="d-flex justify-content-between align-items-start">
+                                        <div class="d-flex">
+                                            <div class="transaction-icon bg-primary bg-opacity-25 text-primary me-3">
+                                                <i class="bi bi-people"></i>
+                                            </div>
+                                            <div>
+                                                <h6 class="mb-1">Group Contribution</h6>
+                                                <div class="d-flex align-items-center">
+                                                    <span class="category-tag category-group me-2">Group</span>
+                                                    <small class="text-muted">Adenta Market Traders</small>
+                                                </div>
+                                                <small class="text-muted">
+                                                    <i class="bi bi-calendar me-1"></i>2024-05-25 • 
+                                                    <i class="bi bi-clock me-1 ms-2"></i>09:45 GMT
+                                                </small>
+                                            </div>
+                                        </div>
+                                        <div class="text-end">
+                                            <div class="amount-positive">+¢1,000.00</div>
+                                            <small class="text-muted">Balance: ¢10,420.00</small>
+                                            <div class="mt-2">
+                                                <span class="badge bg-success">Completed</span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="mt-2 d-flex justify-content-end">
+                                        <button class="btn btn-sm btn-outline-primary me-2" onclick="viewTransactionDetails()">View</button>
+                                        <button class="btn btn-sm btn-outline-info" onclick="viewGroupDetails()">Group</button>
+                                    </div>
+                                </div>
+
+                                <!-- Transaction 4 - Fee -->
+                                <div class="transaction-detail transaction-fee" data-type="expense" data-category="fee">
+                                    <div class="d-flex justify-content-between align-items-start">
+                                        <div class="d-flex">
+                                            <div class="transaction-icon bg-secondary bg-opacity-25 text-secondary me-3">
+                                                <i class="bi bi-credit-card"></i>
+                                            </div>
+                                            <div>
+                                                <h6 class="mb-1">Platform Fee</h6>
+                                                <div class="d-flex align-items-center">
+                                                    <span class="category-tag category-fee me-2">Fee</span>
+                                                    <small class="text-muted">Monthly service charge</small>
+                                                </div>
+                                                <small class="text-muted">
+                                                    <i class="bi bi-calendar me-1"></i>2024-05-22 • 
+                                                    <i class="bi bi-clock me-1 ms-2"></i>08:00 GMT
+                                                </small>
+                                            </div>
+                                        </div>
+                                        <div class="text-end">
+                                            <div class="amount-negative">-¢50.00</div>
+                                            <small class="text-muted">Balance: ¢9,170.00</small>
+                                            <div class="mt-2">
+                                                <span class="badge bg-success">Completed</span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="mt-2 d-flex justify-content-end">
+                                        <button class="btn btn-sm btn-outline-primary" onclick="viewTransactionDetails()">View</button>
+                                    </div>
+                                </div>
+
+                                <!-- Transaction 5 - Interest -->
+                                <div class="transaction-detail transaction-in" data-type="income" data-category="interest">
+                                    <div class="d-flex justify-content-between align-items-start">
+                                        <div class="d-flex">
+                                            <div class="transaction-icon bg-warning bg-opacity-25 text-warning me-3">
+                                                <i class="bi bi-percent"></i>
+                                            </div>
+                                            <div>
+                                                <h6 class="mb-1">Interest Received</h6>
+                                                <div class="d-flex align-items-center">
+                                                    <span class="category-tag category-interest me-2">Interest</span>
+                                                    <small class="text-muted">From loan LN-2023-045</small>
+                                                </div>
+                                                <small class="text-muted">
+                                                    <i class="bi bi-calendar me-1"></i>2024-05-24 • 
+                                                    <i class="bi bi-clock me-1 ms-2"></i>16:20 GMT
+                                                </small>
+                                            </div>
+                                        </div>
+                                        <div class="text-end">
+                                            <div class="amount-positive">+¢250.00</div>
+                                            <small class="text-muted">Balance: ¢9,420.00</small>
+                                            <div class="mt-2">
+                                                <span class="badge bg-success">Completed</span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="mt-2 d-flex justify-content-end">
+                                        <button class="btn btn-sm btn-outline-primary me-2" onclick="viewTransactionDetails()">View</button>
+                                        <button class="btn btn-sm btn-outline-success" onclick="downloadReceipt()">Receipt</button>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Pagination -->
+                            <div class="card-footer">
+                                <nav aria-label="Transaction pagination">
+                                    <ul class="pagination justify-content-center mb-0">
+                                        <li class="page-item disabled">
+                                            <a class="page-link" href="#">Previous</a>
+                                        </li>
+                                        <li class="page-item active"><a class="page-link" href="#">1</a></li>
+                                        <li class="page-item"><a class="page-link" href="#">2</a></li>
+                                        <li class="page-item"><a class="page-link" href="#">3</a></li>
+                                        <li class="page-item">
+                                            <a class="page-link" href="#">Next</a>
+                                        </li>
+                                    </ul>
+                                </nav>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Transaction Statistics & Tools -->
+                    <div class="col-lg-4">
+                        <!-- Transaction Statistics -->
+                        <div class="card transaction-card mb-4">
+                            <div class="card-header">
+                                <h5 class="mb-0">Transaction Statistics</h5>
+                            </div>
+                            <div class="card-body">
+                                <div class="chart-container">
+                                    <canvas id="transactionChart" height="200"></canvas>
+                                </div>
+                                <div class="row mt-3">
+                                    <div class="col-6">
+                                        <div class="text-center">
+                                            <div class="text-success fw-bold">15</div>
+                                            <small class="text-muted">Income Txns</small>
+                                        </div>
+                                    </div>
+                                    <div class="col-6">
+                                        <div class="text-center">
+                                            <div class="text-danger fw-bold">8</div>
+                                            <small class="text-muted">Expense Txns</small>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Quick Actions -->
+                        <div class="card transaction-card mb-4">
+                            <div class="card-body">
+                                <h6 class="mb-3">Quick Actions</h6>
+                                <div class="d-grid gap-2">
+                                    <button class="btn btn-outline-primary" onclick="reconcileTransactions()">
+                                        <i class="bi bi-check-circle me-2"></i>Reconcile
+                                    </button>
+                                    <button class="btn btn-outline-success" data-bs-toggle="modal" data-bs-target="#bulkExportModal">
+                                        <i class="bi bi-file-earmark-arrow-down me-2"></i>Bulk Export
+                                    </button>
+                                    <button class="btn btn-outline-warning" onclick="runReports()">
+                                        <i class="bi bi-graph-up me-2"></i>Run Reports
+                                    </button>
+                                    <button class="btn btn-outline-info" onclick="viewTaxSummary()">
+                                        <i class="bi bi-calculator me-2"></i>Tax Summary
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Recent Receipts -->
+                        <div class="card transaction-card">
+                            <div class="card-header">
+                                <h5 class="mb-0">Recent Receipts</h5>
+                            </div>
+                            <div class="card-body">
+                                <div class="receipt-preview mb-3" onclick="viewReceipt()">
+                                    <i class="bi bi-receipt-cutoff fs-1 text-muted d-block mb-2"></i>
+                                    <p class="text-muted mb-1">Loan Repayment Receipt</p>
+                                    <small class="text-muted">¢500.00 • May 28, 2024</small>
+                                </div>
+                                <div class="receipt-preview" onclick="viewReceipt()">
+                                    <i class="bi bi-receipt-cutoff fs-1 text-muted d-block mb-2"></i>
+                                    <p class="text-muted mb-1">Group Contribution Receipt</p>
+                                    <small class="text-muted">¢1,000.00 • May 25, 2024</small>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Transaction Categories -->
+                <div class="card transaction-card mt-4">
+                    <div class="card-header">
+                        <h5 class="mb-0">Transaction Categories</h5>
+                    </div>
+                    <div class="card-body">
+                        <div class="row">
+                            <div class="col-md-3">
+                                <div class="d-flex align-items-center mb-3">
+                                    <div class="bg-success bg-opacity-25 p-3 rounded-circle me-3">
+                                        <i class="bi bi-cash-coin text-success"></i>
+                                    </div>
+                                    <div>
+                                        <h6 class="mb-0">Loan Transactions</h6>
+                                        <div class="text-success fw-bold">¢10,240</div>
+                                        <small class="text-muted">42 transactions</small>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-3">
+                                <div class="d-flex align-items-center mb-3">
+                                    <div class="bg-primary bg-opacity-25 p-3 rounded-circle me-3">
+                                        <i class="bi bi-people text-primary"></i>
+                                    </div>
+                                    <div>
+                                        <h6 class="mb-0">Group Transactions</h6>
+                                        <div class="text-primary fw-bold">¢8,500</div>
+                                        <small class="text-muted">18 transactions</small>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-3">
+                                <div class="d-flex align-items-center mb-3">
+                                    <div class="bg-warning bg-opacity-25 p-3 rounded-circle me-3">
+                                        <i class="bi bi-percent text-warning"></i>
+                                    </div>
+                                    <div>
+                                        <h6 class="mb-0">Interest</h6>
+                                        <div class="text-warning fw-bold">¢1,850</div>
+                                        <small class="text-muted">12 transactions</small>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-3">
+                                <div class="d-flex align-items-center mb-3">
+                                    <div class="bg-secondary bg-opacity-25 p-3 rounded-circle me-3">
+                                        <i class="bi bi-credit-card text-secondary"></i>
+                                    </div>
+                                    <div>
+                                        <h6 class="mb-0">Fees & Charges</h6>
+                                        <div class="text-secondary fw-bold">¢230</div>
+                                        <small class="text-muted">8 transactions</small>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </main>
+        </div>
+    </div>
+
+    <!-- New Transaction Modal -->
+    <div class="modal fade" id="newTransactionModal" tabindex="-1">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Record New Transaction</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <form id="transactionForm">
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                <label class="form-label">Transaction Type</label>
+                                <select class="form-select" required>
+                                    <option value="">Select type</option>
+                                    <option value="income">Income</option>
+                                    <option value="expense">Expense</option>
+                                    <option value="transfer">Transfer</option>
+                                    <option value="adjustment">Adjustment</option>
+                                </select>
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <label class="form-label">Amount (¢)</label>
+                                <input type="number" class="form-control" min="0" step="0.01" required>
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <label class="form-label">Category</label>
+                                <select class="form-select" required>
+                                    <option value="">Select category</option>
+                                    <option value="loan">Loan Related</option>
+                                    <option value="group">Group Transaction</option>
+                                    <option value="interest">Interest</option>
+                                    <option value="fee">Fee/Charge</option>
+                                    <option value="personal">Personal</option>
+                                    <option value="business">Business</option>
+                                </select>
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <label class="form-label">Date & Time</label>
+                                <input type="datetime-local" class="form-control" required>
+                            </div>
+                            <div class="col-12 mb-3">
+                                <label class="form-label">Description</label>
+                                <textarea class="form-control" rows="3" placeholder="Describe the transaction..." required></textarea>
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <label class="form-label">Counterparty</label>
+                                <input type="text" class="form-control" placeholder="Who is this transaction with?">
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <label class="form-label">Reference Number</label>
+                                <input type="text" class="form-control" placeholder="Optional reference number">
+                            </div>
+                            <div class="col-12 mb-3">
+                                <label class="form-label">Upload Supporting Document</label>
+                                <input type="file" class="form-control" accept=".pdf,.jpg,.jpeg,.png">
+                                <small class="text-muted">Upload receipt, invoice, or other supporting document</small>
+                            </div>
+                            <div class="col-12 mb-3">
+                                <div class="form-check">
+                                    <input class="form-check-input" type="checkbox" id="recurringTransaction">
+                                    <label class="form-check-label" for="recurringTransaction">
+                                        This is a recurring transaction
+                                    </label>
+                                </div>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                    <button type="submit" form="transactionForm" class="btn btn-success">Record Transaction</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Bulk Export Modal -->
+    <div class="modal fade" id="bulkExportModal" tabindex="-1">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Bulk Export Transactions</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <form id="exportForm">
+                        <div class="mb-3">
+                            <label class="form-label">Date Range</label>
+                            <div class="input-group">
+                                <input type="date" class="form-control" value="2024-01-01">
+                                <span class="input-group-text">to</span>
+                                <input type="date" class="form-control" value="2024-05-31">
+                            </div>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">Export Format</label>
+                            <select class="form-select">
+                                <option value="csv">CSV (Excel)</option>
+                                <option value="pdf">PDF Report</option>
+                                <option value="json">JSON Data</option>
+                                <option value="xml">XML Format</option>
+                            </select>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">Include Columns</label>
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <div class="form-check">
+                                        <input class="form-check-input" type="checkbox" id="colDate" checked>
+                                        <label class="form-check-label" for="colDate">Date & Time</label>
+                                    </div>
+                                    <div class="form-check">
+                                        <input class="form-check-input" type="checkbox" id="colAmount" checked>
+                                        <label class="form-check-label" for="colAmount">Amount</label>
+                                    </div>
+                                    <div class="form-check">
+                                        <input class="form-check-input" type="checkbox" id="colDescription" checked>
+                                        <label class="form-check-label" for="colDescription">Description</label>
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="form-check">
+                                        <input class="form-check-input" type="checkbox" id="colCategory" checked>
+                                        <label class="form-check-label" for="colCategory">Category</label>
+                                    </div>
+                                    <div class="form-check">
+                                        <input class="form-check-input" type="checkbox" id="colStatus">
+                                        <label class="form-check-label" for="colStatus">Status</label>
+                                    </div>
+                                    <div class="form-check">
+                                        <input class="form-check-input" type="checkbox" id="colBalance">
+                                        <label class="form-check-label" for="colBalance">Balance</label>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">Email Export To (Optional)</label>
+                            <input type="email" class="form-control" placeholder="email@example.com">
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                    <button type="submit" form="exportForm" class="btn btn-success">Export Transactions</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        // Initialize transaction chart
+        const transactionCtx = document.getElementById('transactionChart').getContext('2d');
+        const transactionChart = new Chart(transactionCtx, {
+            type: 'doughnut',
+            data: {
+                labels: ['Loans', 'Groups', 'Interest', 'Fees', 'Other'],
+                datasets: [{
+                    data: [45, 25, 15, 8, 7],
+                    backgroundColor: ['#2E8B57', '#0d6efd', '#ffc107', '#6c757d', '#20c997']
+                }]
+            },
+            options: {
+                responsive: true,
+                plugins: {
+                    legend: {
+                        position: 'bottom',
+                    }
+                }
+            }
+        });
+
+        // Filter functionality
+        document.querySelectorAll('.filter-badge').forEach(badge => {
+            badge.addEventListener('click', function() {
+                // Update active badge
+                document.querySelectorAll('.filter-badge').forEach(b => b.classList.remove('active'));
+                this.classList.add('active');
+                
+                const filterType = this.dataset.type;
+                const transactions = document.querySelectorAll('.transaction-detail');
+                
+                transactions.forEach(transaction => {
+                    if (filterType === 'all') {
+                        transaction.style.display = 'flex';
+                    } else if (transaction.dataset.type === filterType) {
+                        transaction.style.display = 'flex';
+                    } else {
+                        transaction.style.display = 'none';
+                    }
+                });
+            });
+        });
+
+        // Search functionality
+        document.getElementById('transactionSearch')?.addEventListener('input', function(e) {
+            const searchTerm = e.target.value.toLowerCase();
+            const transactions = document.querySelectorAll('.transaction-detail');
+            
+            transactions.forEach(transaction => {
+                const text = transaction.textContent.toLowerCase();
+                if (text.includes(searchTerm)) {
+                    transaction.style.display = 'flex';
+                    // Highlight matching text (simplified)
+                    const elements = transaction.querySelectorAll('h6, small');
+                    elements.forEach(el => {
+                        const original = el.textContent;
+                        const highlighted = original.replace(
+                            new RegExp(searchTerm, 'gi'),
+                            match => `<span class="search-highlight">${match}</span>`
+                        );
+                        el.innerHTML = highlighted;
+                    });
+                } else {
+                    transaction.style.display = 'none';
+                }
+            });
+        });
+
+        // Action button handlers
+        function viewTransactionDetails() {
+            alert('Opening transaction details...');
+        }
+
+        function downloadReceipt() {
+            alert('Downloading receipt...');
+        }
+
+        function disputeTransaction() {
+            alert('Opening dispute form...');
+        }
+
+        function viewGroupDetails() {
+            alert('Opening group details...');
+        }
+
+        function exportTransactions() {
+            alert('Exporting transactions...');
+        }
+
+        function reconcileTransactions() {
+            alert('Opening reconciliation tool...');
+        }
+
+        function runReports() {
+            alert('Running transaction reports...');
+        }
+
+        function viewTaxSummary() {
+            alert('Opening tax summary...');
+        }
+
+        function viewReceipt() {
+            alert('Viewing receipt...');
+        }
+
+        // Form submission handlers
+        document.getElementById('transactionForm')?.addEventListener('submit', function(e) {
+            e.preventDefault();
+            alert('Transaction recorded successfully!');
+            const modal = bootstrap.Modal.getInstance(document.getElementById('newTransactionModal'));
+            modal.hide();
+        });
+
+        document.getElementById('exportForm')?.addEventListener('submit', function(e) {
+            e.preventDefault();
+            alert('Export started! You will receive an email when it\'s ready.');
+            const modal = bootstrap.Modal.getInstance(document.getElementById('bulkExportModal'));
+            modal.hide();
+        });
+
+        // Date range change handler
+        document.querySelectorAll('.date-picker input').forEach(input => {
+            input.addEventListener('change', function() {
+                const fromDate = document.querySelector('.date-picker input:first-child').value;
+                const toDate = document.querySelector('.date-picker input:last-child').value;
+                
+                if (fromDate && toDate) {
+                    alert(`Filtering transactions from ${fromDate} to ${toDate}...`);
+                    // In production, this would reload transaction data
+                }
+            });
+        });
+    </script>
+</body>
+</html>

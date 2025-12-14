@@ -1,0 +1,911 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document Upload - Pesewa Micro-Lending</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.8.1/font/bootstrap-icons.css">
+    <style>
+        :root {
+            --primary-color: #2E8B57;
+            --secondary-color: #FFD700;
+        }
+        .document-card {
+            border-radius: 12px;
+            border: none;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+            transition: transform 0.3s;
+        }
+        .document-card:hover {
+            transform: translateY(-3px);
+        }
+        .upload-area {
+            border: 2px dashed #dee2e6;
+            border-radius: 12px;
+            padding: 40px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s;
+            background: #f8f9fa;
+        }
+        .upload-area:hover, .upload-area.dragover {
+            border-color: var(--primary-color);
+            background: #f8fff9;
+        }
+        .document-icon {
+            width: 60px;
+            height: 60px;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 24px;
+            color: white;
+        }
+        .document-preview {
+            border: 1px solid #e9ecef;
+            border-radius: 8px;
+            padding: 15px;
+            margin-bottom: 15px;
+            transition: all 0.3s;
+        }
+        .document-preview:hover {
+            border-color: var(--primary-color);
+            background: #f8fff9;
+        }
+        .verification-status {
+            padding: 5px 15px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: bold;
+        }
+        .status-verified { background: #d4edda; color: #155724; }
+        .status-pending { background: #fff3cd; color: #856404; }
+        .status-rejected { background: #f8d7da; color: #721c24; }
+        .status-expired { background: #e2e3e5; color: #383d41; }
+        .ocr-preview {
+            background: #f8f9fa;
+            border-radius: 8px;
+            padding: 15px;
+            font-family: monospace;
+            font-size: 12px;
+            max-height: 200px;
+            overflow-y: auto;
+        }
+        .progress-thin {
+            height: 6px;
+            border-radius: 3px;
+        }
+        .security-badge {
+            padding: 3px 10px;
+            border-radius: 12px;
+            font-size: 11px;
+            font-weight: bold;
+        }
+        .security-encrypted { background: #d1ecf1; color: #0c5460; }
+        .security-sensitive { background: #f8d7da; color: #721c24; }
+        .security-public { background: #d4edda; color: #155724; }
+        .category-badge {
+            padding: 3px 10px;
+            border-radius: 12px;
+            font-size: 11px;
+            background: #e9ecef;
+            color: #495057;
+        }
+        .thumbnail-container {
+            width: 80px;
+            height: 80px;
+            border-radius: 8px;
+            overflow: hidden;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: #f8f9fa;
+        }
+        .thumbnail-container img {
+            max-width: 100%;
+            max-height: 100%;
+            object-fit: contain;
+        }
+        .expiry-warning {
+            border-left: 4px solid #fd7e14;
+            background: #fff8f0;
+            padding: 10px;
+            border-radius: 0 8px 8px 0;
+        }
+    </style>
+</head>
+<body>
+    <div class="container-fluid">
+        <div class="row">
+            <!-- Sidebar -->
+            <nav class="col-md-3 col-lg-2 d-md-block sidebar collapse" style="background: linear-gradient(180deg, #1E5631 0%, #2E8B57 100%); color: white;">
+                <div class="position-sticky pt-3">
+                    <div class="d-flex align-items-center mb-4 px-3">
+                        <img src="https://via.placeholder.com/40x40" alt="Logo" class="me-2">
+                        <h5 class="mb-0">Pesewa</h5>
+                    </div>
+                    
+                    <ul class="nav flex-column">
+                        <li class="nav-item">
+                            <a class="nav-link" href="dashboard.html">
+                                <i class="bi bi-speedometer2 me-2"></i>
+                                Dashboard
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="profile.html">
+                                <i class="bi bi-person me-2"></i>
+                                Profile
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="transaction.html">
+                                <i class="bi bi-arrow-left-right me-2"></i>
+                                Transactions
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="emergency-contact.html">
+                                <i class="bi bi-telephone me-2"></i>
+                                Emergency
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link active" href="documentation-upload.html">
+                                <i class="bi bi-cloud-arrow-up me-2"></i>
+                                Documents
+                                <span class="badge bg-warning float-end">2</span>
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="dispute.html">
+                                <i class="bi bi-shield-exclamation me-2"></i>
+                                Disputes
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="analytics.html">
+                                <i class="bi bi-graph-up me-2"></i>
+                                Analytics
+                            </a>
+                        </li>
+                    </ul>
+                </div>
+            </nav>
+
+            <!-- Main Content -->
+            <main class="col-md-9 ms-sm-auto col-lg-10 px-md-4 py-4">
+                <div class="d-flex justify-content-between align-items-center mb-4">
+                    <h2 class="h3">Document Management</h2>
+                    <button class="btn btn-success" data-bs-toggle="modal" data-bs-target="#uploadDocumentModal">
+                        <i class="bi bi-cloud-arrow-up me-2"></i>Upload Document
+                    </button>
+                </div>
+
+                <!-- Document Statistics -->
+                <div class="row g-3 mb-4">
+                    <div class="col-md-3">
+                        <div class="card border-0 bg-light">
+                            <div class="card-body">
+                                <div class="d-flex align-items-center">
+                                    <div class="bg-success bg-opacity-25 p-3 rounded-circle me-3">
+                                        <i class="bi bi-file-earmark-check text-success"></i>
+                                    </div>
+                                    <div>
+                                        <h6 class="text-muted mb-0">Verified</h6>
+                                        <h4 class="mb-0">8</h4>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="col-md-3">
+                        <div class="card border-0 bg-light">
+                            <div class="card-body">
+                                <div class="d-flex align-items-center">
+                                    <div class="bg-warning bg-opacity-25 p-3 rounded-circle me-3">
+                                        <i class="bi bi-clock-history text-warning"></i>
+                                    </div>
+                                    <div>
+                                        <h6 class="text-muted mb-0">Pending Review</h6>
+                                        <h4 class="mb-0">2</h4>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="col-md-3">
+                        <div class="card border-0 bg-light">
+                            <div class="card-body">
+                                <div class="d-flex align-items-center">
+                                    <div class="bg-danger bg-opacity-25 p-3 rounded-circle me-3">
+                                        <i class="bi bi-exclamation-triangle text-danger"></i>
+                                    </div>
+                                    <div>
+                                        <h6 class="text-muted mb-0">Expiring Soon</h6>
+                                        <h4 class="mb-0">1</h4>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="col-md-3">
+                        <div class="card border-0 bg-light">
+                            <div class="card-body">
+                                <div class="d-flex align-items-center">
+                                    <div class="bg-info bg-opacity-25 p-3 rounded-circle me-3">
+                                        <i class="bi bi-shield-check text-info"></i>
+                                    </div>
+                                    <div>
+                                        <h6 class="text-muted mb-0">Storage Used</h6>
+                                        <h4 class="mb-0">24 MB</h4>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Document Categories -->
+                <div class="card document-card mb-4">
+                    <div class="card-header">
+                        <h5 class="mb-0">Document Categories</h5>
+                    </div>
+                    <div class="card-body">
+                        <div class="row">
+                            <div class="col-md-2">
+                                <div class="text-center">
+                                    <div class="document-icon bg-success mb-2">
+                                        <i class="bi bi-person-badge"></i>
+                                    </div>
+                                    <h6>ID Documents</h6>
+                                    <small class="text-muted">3 files</small>
+                                </div>
+                            </div>
+                            <div class="col-md-2">
+                                <div class="text-center">
+                                    <div class="document-icon bg-primary mb-2">
+                                        <i class="bi bi-house"></i>
+                                    </div>
+                                    <h6>Address Proof</h6>
+                                    <small class="text-muted">2 files</small>
+                                </div>
+                            </div>
+                            <div class="col-md-2">
+                                <div class="text-center">
+                                    <div class="document-icon bg-warning mb-2">
+                                        <i class="bi bi-bank"></i>
+                                    </div>
+                                    <h6>Bank Statements</h6>
+                                    <small class="text-muted">1 file</small>
+                                </div>
+                            </div>
+                            <div class="col-md-2">
+                                <div class="text-center">
+                                    <div class="document-icon bg-info mb-2">
+                                        <i class="bi bi-file-text"></i>
+                                    </div>
+                                    <h6>Loan Agreements</h6>
+                                    <small class="text-muted">4 files</small>
+                                </div>
+                            </div>
+                            <div class="col-md-2">
+                                <div class="text-center">
+                                    <div class="document-icon bg-secondary mb-2">
+                                        <i class="bi bi-receipt"></i>
+                                    </div>
+                                    <h6>Receipts</h6>
+                                    <small class="text-muted">6 files</small>
+                                </div>
+                            </div>
+                            <div class="col-md-2">
+                                <div class="text-center">
+                                    <div class="document-icon bg-dark mb-2">
+                                        <i class="bi bi-folder"></i>
+                                    </div>
+                                    <h6>Other</h6>
+                                    <small class="text-muted">2 files</small>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Upload Area -->
+                <div class="card document-card mb-4">
+                    <div class="card-body">
+                        <div class="upload-area" id="dropArea">
+                            <i class="bi bi-cloud-arrow-up fs-1 text-muted d-block mb-3"></i>
+                            <h5>Drag & Drop Files Here</h5>
+                            <p class="text-muted mb-3">or click to browse files on your computer</p>
+                            <div class="row justify-content-center">
+                                <div class="col-auto">
+                                    <button class="btn btn-outline-primary me-2">
+                                        <i class="bi bi-file-earmark-pdf me-1"></i>Upload PDF
+                                    </button>
+                                    <button class="btn btn-outline-success me-2">
+                                        <i class="bi bi-image me-1"></i>Upload Image
+                                    </button>
+                                    <button class="btn btn-outline-secondary">
+                                        <i class="bi bi-folder me-1"></i>Multiple Files
+                                    </button>
+                                </div>
+                            </div>
+                            <small class="text-muted mt-3 d-block">
+                                Max file size: 25MB • Supported: PDF, JPG, PNG, DOC, DOCX
+                            </small>
+                            <input type="file" class="d-none" id="fileInput" multiple accept=".pdf,.jpg,.jpeg,.png,.doc,.docx">
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Document List -->
+                <div class="row">
+                    <div class="col-lg-8">
+                        <!-- Verified Documents -->
+                        <div class="card document-card mb-4">
+                            <div class="card-header">
+                                <h5 class="mb-0">Verified Documents</h5>
+                            </div>
+                            <div class="card-body">
+                                <!-- Document 1 -->
+                                <div class="document-preview">
+                                    <div class="d-flex justify-content-between align-items-start">
+                                        <div class="d-flex">
+                                            <div class="thumbnail-container me-3">
+                                                <img src="https://via.placeholder.com/80x100" alt="Document">
+                                            </div>
+                                            <div>
+                                                <h6 class="mb-1">National ID Card</h6>
+                                                <div class="d-flex align-items-center mb-2">
+                                                    <span class="verification-status status-verified me-2">Verified</span>
+                                                    <span class="category-badge me-2">ID Document</span>
+                                                    <span class="security-badge security-encrypted">Encrypted</span>
+                                                </div>
+                                                <small class="text-muted d-block">
+                                                    <i class="bi bi-calendar me-1"></i>Uploaded: May 15, 2024
+                                                </small>
+                                                <small class="text-muted">
+                                                    <i class="bi bi-shield-check me-1"></i>Verified by: System Auto-Verification
+                                                </small>
+                                            </div>
+                                        </div>
+                                        <div class="btn-group">
+                                            <button class="btn btn-sm btn-outline-primary" onclick="viewDocument()">View</button>
+                                            <button class="btn btn-sm btn-outline-secondary" onclick="downloadDocument()">Download</button>
+                                            <button class="btn btn-sm btn-outline-danger" onclick="deleteDocument()">Delete</button>
+                                        </div>
+                                    </div>
+                                    <div class="mt-3">
+                                        <small class="text-muted">OCR Extracted Data:</small>
+                                        <div class="ocr-preview mt-1">
+                                            <div>Name: Kwame Appiah</div>
+                                            <div>ID Number: GHA-123456789</div>
+                                            <div>Date of Birth: 15 June 1985</div>
+                                            <div>Expiry: 15 June 2030</div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <!-- Document 2 -->
+                                <div class="document-preview">
+                                    <div class="d-flex justify-content-between align-items-start">
+                                        <div class="d-flex">
+                                            <div class="thumbnail-container me-3">
+                                                <img src="https://via.placeholder.com/80x100" alt="Document">
+                                            </div>
+                                            <div>
+                                                <h6 class="mb-1">Utility Bill - ECG</h6>
+                                                <div class="d-flex align-items-center mb-2">
+                                                    <span class="verification-status status-verified me-2">Verified</span>
+                                                    <span class="category-badge me-2">Address Proof</span>
+                                                    <span class="security-badge security-sensitive">Sensitive</span>
+                                                </div>
+                                                <small class="text-muted d-block">
+                                                    <i class="bi bi-calendar me-1"></i>Uploaded: May 20, 2024
+                                                </small>
+                                                <small class="text-muted">
+                                                    <i class="bi bi-shield-check me-1"></i>Verified: May 22, 2024
+                                                </small>
+                                            </div>
+                                        </div>
+                                        <div class="btn-group">
+                                            <button class="btn btn-sm btn-outline-primary" onclick="viewDocument()">View</button>
+                                            <button class="btn btn-sm btn-outline-secondary" onclick="downloadDocument()">Download</button>
+                                            <button class="btn btn-sm btn-outline-info" onclick="shareDocument()">Share</button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Pending Documents -->
+                        <div class="card document-card">
+                            <div class="card-header">
+                                <h5 class="mb-0">Pending Review</h5>
+                            </div>
+                            <div class="card-body">
+                                <!-- Document 3 -->
+                                <div class="document-preview">
+                                    <div class="d-flex justify-content-between align-items-start">
+                                        <div class="d-flex">
+                                            <div class="thumbnail-container me-3">
+                                                <img src="https://via.placeholder.com/80x100" alt="Document">
+                                            </div>
+                                            <div>
+                                                <h6 class="mb-1">Bank Statement - GCB</h6>
+                                                <div class="d-flex align-items-center mb-2">
+                                                    <span class="verification-status status-pending me-2">Pending Review</span>
+                                                    <span class="category-badge me-2">Bank Statement</span>
+                                                    <span class="security-badge security-sensitive">Confidential</span>
+                                                </div>
+                                                <small class="text-muted d-block">
+                                                    <i class="bi bi-calendar me-1"></i>Uploaded: May 28, 2024
+                                                </small>
+                                                <div class="progress progress-thin mt-2" style="width: 200px;">
+                                                    <div class="progress-bar bg-warning" style="width: 60%"></div>
+                                                </div>
+                                                <small class="text-muted">Verification progress: 60%</small>
+                                            </div>
+                                        </div>
+                                        <div class="btn-group">
+                                            <button class="btn btn-sm btn-outline-primary" onclick="viewDocument()">View</button>
+                                            <button class="btn btn-sm btn-outline-warning" onclick="checkVerificationStatus()">Check Status</button>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <!-- Document 4 with Expiry Warning -->
+                                <div class="document-preview">
+                                    <div class="expiry-warning mb-3">
+                                        <div class="d-flex align-items-center">
+                                            <i class="bi bi-exclamation-triangle text-warning me-2"></i>
+                                            <small class="fw-bold">This document expires in 30 days</small>
+                                        </div>
+                                    </div>
+                                    <div class="d-flex justify-content-between align-items-start">
+                                        <div class="d-flex">
+                                            <div class="thumbnail-container me-3">
+                                                <img src="https://via.placeholder.com/80x100" alt="Document">
+                                            </div>
+                                            <div>
+                                                <h6 class="mb-1">Business License</h6>
+                                                <div class="d-flex align-items-center mb-2">
+                                                    <span class="verification-status status-verified me-2">Verified</span>
+                                                    <span class="category-badge me-2">Business</span>
+                                                    <span class="security-badge security-public">Public</span>
+                                                </div>
+                                                <small class="text-muted d-block">
+                                                    <i class="bi bi-calendar me-1"></i>Expires: June 30, 2024
+                                                </small>
+                                                <small class="text-warning">
+                                                    <i class="bi bi-clock-history me-1"></i>Renewal required soon
+                                                </small>
+                                            </div>
+                                        </div>
+                                        <div class="btn-group">
+                                            <button class="btn btn-sm btn-outline-primary" onclick="viewDocument()">View</button>
+                                            <button class="btn btn-sm btn-outline-warning" onclick="setReminder()">Set Reminder</button>
+                                            <button class="btn btn-sm btn-outline-success" onclick="renewDocument()">Renew</button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Document Tools & Info -->
+                    <div class="col-lg-4">
+                        <!-- OCR Tools -->
+                        <div class="card document-card mb-4">
+                            <div class="card-header">
+                                <h5 class="mb-0">OCR Tools</h5>
+                            </div>
+                            <div class="card-body">
+                                <p class="small text-muted">Extract text from your documents automatically.</p>
+                                <div class="mb-3">
+                                    <label class="form-label small">Select Document</label>
+                                    <select class="form-select form-select-sm">
+                                        <option value="">Choose document to scan</option>
+                                        <option value="1">National ID Card</option>
+                                        <option value="2">Utility Bill - ECG</option>
+                                        <option value="3">Bank Statement - GCB</option>
+                                    </select>
+                                </div>
+                                <div class="mb-3">
+                                    <label class="form-label small">OCR Language</label>
+                                    <select class="form-select form-select-sm">
+                                        <option value="en">English</option>
+                                        <option value="fr">French</option>
+                                    </select>
+                                </div>
+                                <div class="d-grid gap-2">
+                                    <button class="btn btn-outline-primary btn-sm" onclick="runOCR()">
+                                        <i class="bi bi-text-paragraph me-1"></i>Extract Text
+                                    </button>
+                                    <button class="btn btn-outline-success btn-sm" onclick="validateDocument()">
+                                        <i class="bi bi-check-circle me-1"></i>Validate Data
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Security Settings -->
+                        <div class="card document-card mb-4">
+                            <div class="card-header">
+                                <h5 class="mb-0">Security Settings</h5>
+                            </div>
+                            <div class="card-body">
+                                <div class="mb-3">
+                                    <div class="d-flex justify-content-between align-items-center mb-2">
+                                        <div>
+                                            <h6 class="mb-0">Auto-Encryption</h6>
+                                            <small class="text-muted">Encrypt all uploaded documents</small>
+                                        </div>
+                                        <div class="form-check form-switch">
+                                            <input class="form-check-input" type="checkbox" id="autoEncrypt" checked>
+                                            <label class="form-check-label" for="autoEncrypt"></label>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="mb-3">
+                                    <div class="d-flex justify-content-between align-items-center mb-2">
+                                        <div>
+                                            <h6 class="mb-0">Watermarking</h6>
+                                            <small class="text-muted">Add watermark to sensitive docs</small>
+                                        </div>
+                                        <div class="form-check form-switch">
+                                            <input class="form-check-input" type="checkbox" id="watermark" checked>
+                                            <label class="form-check-label" for="watermark"></label>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="mb-3">
+                                    <div class="d-flex justify-content-between align-items-center mb-2">
+                                        <div>
+                                            <h6 class="mb-0">Auto-Delete</h6>
+                                            <small class="text-muted">Delete expired documents</small>
+                                        </div>
+                                        <div class="form-check form-switch">
+                                            <input class="form-check-input" type="checkbox" id="autoDelete">
+                                            <label class="form-check-label" for="autoDelete"></label>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="mt-3">
+                                    <button class="btn btn-outline-danger btn-sm w-100" onclick="managePermissions()">
+                                        <i class="bi bi-shield-lock me-1"></i>Manage Permissions
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Storage Information -->
+                        <div class="card document-card">
+                            <div class="card-header">
+                                <h5 class="mb-0">Storage Information</h5>
+                            </div>
+                            <div class="card-body">
+                                <div class="mb-3">
+                                    <div class="d-flex justify-content-between mb-1">
+                                        <small>Used: 24 MB</small>
+                                        <small>Limit: 100 MB</small>
+                                    </div>
+                                    <div class="progress" style="height: 8px;">
+                                        <div class="progress-bar bg-success" style="width: 24%"></div>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-6">
+                                        <small class="text-muted d-block">Documents</small>
+                                        <div class="fw-bold">10</div>
+                                    </div>
+                                    <div class="col-6">
+                                        <small class="text-muted d-block">Avg. Size</small>
+                                        <div class="fw-bold">2.4 MB</div>
+                                    </div>
+                                </div>
+                                <hr>
+                                <div class="d-grid gap-2">
+                                    <button class="btn btn-outline-primary btn-sm" onclick="upgradeStorage()">
+                                        <i class="bi bi-cloud-plus me-1"></i>Upgrade Storage
+                                    </button>
+                                    <button class="btn btn-outline-secondary btn-sm" onclick="cleanupStorage()">
+                                        <i class="bi bi-trash me-1"></i>Clean Up
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Compliance Section -->
+                <div class="card document-card mt-4">
+                    <div class="card-header">
+                        <h5 class="mb-0">Compliance & Regulations</h5>
+                    </div>
+                    <div class="card-body">
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="alert alert-info">
+                                    <h6><i class="bi bi-info-circle me-2"></i>Data Protection</h6>
+                                    <small>
+                                        Your documents are stored in compliance with Ghana's Data Protection Act, 2012 (Act 843).
+                                        All sensitive information is encrypted and protected.
+                                    </small>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="alert alert-warning">
+                                    <h6><i class="bi bi-shield-exclamation me-2"></i>Verification Requirements</h6>
+                                    <small>
+                                        For loans above ¢5,000, verified ID and address proof are required.
+                                        Business loans require additional business registration documents.
+                                    </small>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="text-center">
+                            <button class="btn btn-outline-primary me-2" onclick="viewComplianceGuide()">
+                                <i class="bi bi-file-text me-1"></i>Compliance Guide
+                            </button>
+                            <button class="btn btn-outline-success" onclick="generateComplianceReport()">
+                                <i class="bi bi-clipboard-check me-1"></i>Generate Report
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </main>
+        </div>
+    </div>
+
+    <!-- Upload Document Modal -->
+    <div class="modal fade" id="uploadDocumentModal" tabindex="-1">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Upload New Document</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <form id="documentUploadForm">
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                <label class="form-label">Document Type</label>
+                                <select class="form-select" required>
+                                    <option value="">Select document type</option>
+                                    <option value="national-id">National ID Card</option>
+                                    <option value="passport">Passport</option>
+                                    <option value="driver-license">Driver's License</option>
+                                    <option value="voter-id">Voter ID Card</option>
+                                    <option value="utility-bill">Utility Bill</option>
+                                    <option value="bank-statement">Bank Statement</option>
+                                    <option value="business-license">Business License</option>
+                                    <option value="loan-agreement">Loan Agreement</option>
+                                    <option value="receipt">Receipt</option>
+                                    <option value="other">Other</option>
+                                </select>
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <label class="form-label">Security Level</label>
+                                <select class="form-select">
+                                    <option value="public">Public</option>
+                                    <option value="confidential" selected>Confidential</option>
+                                    <option value="secret">Secret</option>
+                                </select>
+                            </div>
+                            <div class="col-12 mb-3">
+                                <label class="form-label">Document Upload</label>
+                                <div class="border rounded p-4 text-center">
+                                    <i class="bi bi-cloud-arrow-up fs-1 text-muted d-block mb-2"></i>
+                                    <p class="text-muted mb-2">Drag and drop files here or click to browse</p>
+                                    <small class="text-muted">Max file size: 25MB • Supported: PDF, JPG, PNG, DOC, DOCX</small>
+                                    <input type="file" class="form-control mt-3" id="documentFile" accept=".pdf,.jpg,.jpeg,.png,.doc,.docx" required>
+                                </div>
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <label class="form-label">Expiry Date (if applicable)</label>
+                                <input type="date" class="form-control">
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <label class="form-label">Document Name</label>
+                                <input type="text" class="form-control" placeholder="Enter a descriptive name">
+                            </div>
+                            <div class="col-12 mb-3">
+                                <label class="form-label">Description</label>
+                                <textarea class="form-control" rows="3" placeholder="Describe the document..."></textarea>
+                            </div>
+                            <div class="col-12 mb-3">
+                                <div class="form-check">
+                                    <input class="form-check-input" type="checkbox" id="autoVerify">
+                                    <label class="form-check-label" for="autoVerify">
+                                        Enable automatic verification (OCR)
+                                    </label>
+                                </div>
+                                <div class="form-check">
+                                    <input class="form-check-input" type="checkbox" id="shareWithLenders">
+                                    <label class="form-check-label" for="shareWithLenders">
+                                        Share with verified lenders
+                                    </label>
+                                </div>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                    <button type="submit" form="documentUploadForm" class="btn btn-success">Upload Document</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        // Drag and drop functionality
+        const dropArea = document.getElementById('dropArea');
+        const fileInput = document.getElementById('fileInput');
+
+        dropArea.addEventListener('click', () => fileInput.click());
+
+        ['dragenter', 'dragover', 'dragleave', 'drop'].forEach(eventName => {
+            dropArea.addEventListener(eventName, preventDefaults, false);
+        });
+
+        function preventDefaults(e) {
+            e.preventDefault();
+            e.stopPropagation();
+        }
+
+        ['dragenter', 'dragover'].forEach(eventName => {
+            dropArea.addEventListener(eventName, highlight, false);
+        });
+
+        ['dragleave', 'drop'].forEach(eventName => {
+            dropArea.addEventListener(eventName, unhighlight, false);
+        });
+
+        function highlight() {
+            dropArea.classList.add('dragover');
+        }
+
+        function unhighlight() {
+            dropArea.classList.remove('dragover');
+        }
+
+        dropArea.addEventListener('drop', handleDrop, false);
+
+        function handleDrop(e) {
+            const dt = e.dataTransfer;
+            const files = dt.files;
+            handleFiles(files);
+        }
+
+        fileInput.addEventListener('change', function() {
+            handleFiles(this.files);
+        });
+
+        function handleFiles(files) {
+            if (files.length > 0) {
+                alert(`Selected ${files.length} file(s). Opening upload form...`);
+                const modal = new bootstrap.Modal(document.getElementById('uploadDocumentModal'));
+                modal.show();
+            }
+        }
+
+        // Document action handlers
+        function viewDocument() {
+            alert('Opening document viewer...');
+        }
+
+        function downloadDocument() {
+            alert('Downloading document...');
+        }
+
+        function deleteDocument() {
+            if (confirm('Are you sure you want to delete this document?')) {
+                alert('Document deleted successfully.');
+            }
+        }
+
+        function shareDocument() {
+            alert('Opening document sharing options...');
+        }
+
+        function checkVerificationStatus() {
+            alert('Checking verification status...');
+        }
+
+        function setReminder() {
+            alert('Setting renewal reminder...');
+        }
+
+        function renewDocument() {
+            alert('Opening document renewal form...');
+        }
+
+        function runOCR() {
+            alert('Running OCR on selected document...');
+        }
+
+        function validateDocument() {
+            alert('Validating document data...');
+        }
+
+        function managePermissions() {
+            alert('Opening document permissions...');
+        }
+
+        function upgradeStorage() {
+            alert('Opening storage upgrade options...');
+        }
+
+        function cleanupStorage() {
+            if (confirm('Clean up old documents?')) {
+                alert('Storage cleanup completed.');
+            }
+        }
+
+        function viewComplianceGuide() {
+            alert('Opening compliance guide...');
+        }
+
+        function generateComplianceReport() {
+            alert('Generating compliance report...');
+        }
+
+        // Form submission handler
+        document.getElementById('documentUploadForm')?.addEventListener('submit', function(e) {
+            e.preventDefault();
+            alert('Document uploaded successfully! Verification in progress.');
+            const modal = bootstrap.Modal.getInstance(document.getElementById('uploadDocumentModal'));
+            modal.hide();
+        });
+
+        // Security toggle handlers
+        document.getElementById('autoEncrypt')?.addEventListener('change', function() {
+            if (this.checked) {
+                alert('Auto-encryption enabled for new documents.');
+            } else {
+                alert('Auto-encryption disabled.');
+            }
+        });
+
+        document.getElementById('watermark')?.addEventListener('change', function() {
+            if (this.checked) {
+                alert('Watermarking enabled for sensitive documents.');
+            } else {
+                alert('Watermarking disabled.');
+            }
+        });
+
+        document.getElementById('autoDelete')?.addEventListener('change', function() {
+            if (this.checked) {
+                if (confirm('Auto-delete will permanently remove expired documents. Continue?')) {
+                    alert('Auto-delete enabled.');
+                } else {
+                    this.checked = false;
+                }
+            } else {
+                alert('Auto-delete disabled.');
+            }
+        });
+
+        // Quick upload buttons
+        document.querySelectorAll('.upload-area .btn-outline-primary, .upload-area .btn-outline-success, .upload-area .btn-outline-secondary').forEach(btn => {
+            btn.addEventListener('click', function(e) {
+                e.stopPropagation();
+                const type = this.textContent.includes('PDF') ? 'PDF' : 
+                            this.textContent.includes('Image') ? 'Image' : 'Multiple';
+                alert(`Opening ${type} file selector...`);
+                fileInput.click();
+            });
+        });
+    </script>
+</body>
+</html>

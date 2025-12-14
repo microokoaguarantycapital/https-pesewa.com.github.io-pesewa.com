@@ -1,0 +1,531 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Borrowing - Pesewa Micro-Lending</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.8.1/font/bootstrap-icons.css">
+    <style>
+        :root {
+            --primary-color: #2E8B57;
+            --secondary-color: #FFD700;
+        }
+        .borrow-card {
+            border-radius: 12px;
+            border: none;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+            transition: transform 0.3s;
+        }
+        .borrow-card:hover {
+            transform: translateY(-3px);
+        }
+        .credit-score {
+            width: 80px;
+            height: 80px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            font-size: 20px;
+            margin: 0 auto;
+        }
+        .score-excellent { background: #d4edda; color: #155724; }
+        .score-good { background: #fff3cd; color: #856404; }
+        .score-fair { background: #f8d7da; color: #721c24; }
+        .payment-schedule {
+            border-left: 3px solid #2E8B57;
+            padding-left: 15px;
+        }
+        .btn-apply {
+            background: linear-gradient(135deg, #2E8B57 0%, #1E5631 100%);
+            color: white;
+            border: none;
+            padding: 10px 30px;
+            border-radius: 25px;
+            font-weight: bold;
+        }
+    </style>
+</head>
+<body>
+    <div class="container-fluid">
+        <div class="row">
+            <!-- Sidebar (Same as dashboard) -->
+            <nav class="col-md-3 col-lg-2 d-md-block sidebar collapse" style="background: linear-gradient(180deg, #1E5631 0%, #2E8B57 100%); color: white;">
+                <div class="position-sticky pt-3">
+                    <div class="d-flex align-items-center mb-4 px-3">
+                        <img src="https://via.placeholder.com/40x40" alt="Logo" class="me-2">
+                        <h5 class="mb-0">Pesewa</h5>
+                    </div>
+                    
+                    <ul class="nav flex-column">
+                        <li class="nav-item">
+                            <a class="nav-link" href="dashboard.html">
+                                <i class="bi bi-speedometer2 me-2"></i>
+                                Dashboard
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="groups.html">
+                                <i class="bi bi-people me-2"></i>
+                                Groups
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="lending.html">
+                                <i class="bi bi-cash-coin me-2"></i>
+                                Lending
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link active" href="borrowing.html">
+                                <i class="bi bi-wallet2 me-2"></i>
+                                Borrowing
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="ledger.html">
+                                <i class="bi bi-journal-text me-2"></i>
+                                Ledger
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="blacklist.html">
+                                <i class="bi bi-shield-exclamation me-2"></i>
+                                Blacklist
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="debt-collectors.html">
+                                <i class="bi bi-person-badge me-2"></i>
+                                Debt Collectors
+                            </a>
+                        </li>
+                    </ul>
+                </div>
+            </nav>
+
+            <!-- Main Content -->
+            <main class="col-md-9 ms-sm-auto col-lg-10 px-md-4 py-4">
+                <div class="d-flex justify-content-between align-items-center mb-4">
+                    <h2 class="h3">Borrowing</h2>
+                    <button class="btn-apply" data-bs-toggle="modal" data-bs-target="#applyLoanModal">
+                        <i class="bi bi-plus-circle me-2"></i>Apply for Loan
+                    </button>
+                </div>
+
+                <!-- Credit Score & Limits -->
+                <div class="row g-4 mb-4">
+                    <div class="col-lg-4">
+                        <div class="card borrow-card">
+                            <div class="card-body text-center">
+                                <h5 class="card-title mb-3">Your Credit Score</h5>
+                                <div class="credit-score score-excellent mb-3">
+                                    850
+                                </div>
+                                <p class="text-success mb-0">
+                                    <i class="bi bi-award-fill me-1"></i>
+                                    Excellent Credit Rating
+                                </p>
+                                <small class="text-muted">Updated: Today</small>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="col-lg-4">
+                        <div class="card borrow-card">
+                            <div class="card-body">
+                                <h5 class="card-title mb-3">Borrowing Limits</h5>
+                                <div class="mb-3">
+                                    <div class="d-flex justify-content-between mb-1">
+                                        <small>Current Utilization</small>
+                                        <small>35%</small>
+                                    </div>
+                                    <div class="progress" style="height: 8px;">
+                                        <div class="progress-bar bg-success" style="width: 35%"></div>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-6">
+                                        <small class="text-muted">Available</small>
+                                        <h4 class="text-success">¢8,500</h4>
+                                    </div>
+                                    <div class="col-6">
+                                        <small class="text-muted">Maximum</small>
+                                        <h4>¢12,000</h4>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="col-lg-4">
+                        <div class="card borrow-card">
+                            <div class="card-body">
+                                <h5 class="card-title mb-3">Quick Loan Options</h5>
+                                <div class="d-grid gap-2">
+                                    <button class="btn btn-outline-success">¢500 - Emergency</button>
+                                    <button class="btn btn-outline-primary">¢2,000 - Business</button>
+                                    <button class="btn btn-outline-warning">¢5,000 - Education</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Active Loans -->
+                <div class="card mb-4">
+                    <div class="card-header">
+                        <h5 class="mb-0">Active Loans</h5>
+                    </div>
+                    <div class="card-body">
+                        <div class="table-responsive">
+                            <table class="table table-hover">
+                                <thead>
+                                    <tr>
+                                        <th>Loan ID</th>
+                                        <th>Amount</th>
+                                        <th>Interest</th>
+                                        <th>Issued Date</th>
+                                        <th>Due Date</th>
+                                        <th>Remaining</th>
+                                        <th>Status</th>
+                                        <th>Action</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr>
+                                        <td>LN-2024-001</td>
+                                        <td class="fw-bold">¢2,500</td>
+                                        <td class="text-success">15%</td>
+                                        <td>15 Jan 2024</td>
+                                        <td>15 Jun 2024</td>
+                                        <td class="fw-bold">¢1,000</td>
+                                        <td><span class="badge bg-success">On Track</span></td>
+                                        <td>
+                                            <button class="btn btn-sm btn-success">Pay Now</button>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td>LN-2024-002</td>
+                                        <td class="fw-bold">¢1,800</td>
+                                        <td class="text-success">12%</td>
+                                        <td>10 Mar 2024</td>
+                                        <td>10 Sep 2024</td>
+                                        <td class="fw-bold">¢1,200</td>
+                                        <td><span class="badge bg-warning">Due Soon</span></td>
+                                        <td>
+                                            <button class="btn btn-sm btn-warning">Schedule</button>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td>LN-2024-003</td>
+                                        <td class="fw-bold">¢3,000</td>
+                                        <td class="text-danger">18%</td>
+                                        <td>15 Feb 2024</td>
+                                        <td>15 May 2024</td>
+                                        <td class="fw-bold text-danger">¢3,450</td>
+                                        <td><span class="badge bg-danger">Overdue</span></td>
+                                        <td>
+                                            <button class="btn btn-sm btn-danger">Pay Overdue</button>
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Payment Schedule -->
+                <div class="row g-4">
+                    <div class="col-lg-8">
+                        <div class="card borrow-card">
+                            <div class="card-header">
+                                <h5 class="mb-0">Upcoming Payments</h5>
+                            </div>
+                            <div class="card-body">
+                                <div class="payment-schedule">
+                                    <div class="d-flex justify-content-between align-items-center mb-3">
+                                        <div>
+                                            <h6 class="mb-0">Loan LN-2024-001</h6>
+                                            <small class="text-muted">Monthly Installment</small>
+                                        </div>
+                                        <div class="text-end">
+                                            <h5 class="text-success mb-0">¢500</h5>
+                                            <small>Due: 15 June 2024</small>
+                                        </div>
+                                    </div>
+                                    
+                                    <div class="d-flex justify-content-between align-items-center mb-3">
+                                        <div>
+                                            <h6 class="mb-0">Loan LN-2024-002</h6>
+                                            <small class="text-muted">Monthly Installment</small>
+                                        </div>
+                                        <div class="text-end">
+                                            <h5 class="text-warning mb-0">¢300</h5>
+                                            <small>Due: 10 June 2024</small>
+                                        </div>
+                                    </div>
+                                    
+                                    <div class="d-flex justify-content-between align-items-center">
+                                        <div>
+                                            <h6 class="mb-0">Overdue Payment</h6>
+                                            <small class="text-muted">LN-2024-003</small>
+                                        </div>
+                                        <div class="text-end">
+                                            <h5 class="text-danger mb-0">¢1,150</h5>
+                                            <small>Overdue: 45 days</small>
+                                        </div>
+                                    </div>
+                                </div>
+                                
+                                <div class="mt-4">
+                                    <button class="btn btn-success w-100">
+                                        <i class="bi bi-credit-card me-2"></i>
+                                        Pay All Upcoming Payments (¢950)
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="col-lg-4">
+                        <div class="card borrow-card">
+                            <div class="card-body">
+                                <h5 class="card-title mb-3">Loan Calculator</h5>
+                                <div class="mb-3">
+                                    <label class="form-label">Loan Amount (¢)</label>
+                                    <input type="range" class="form-range" min="100" max="10000" step="100" value="2000" id="loanAmount">
+                                    <div class="d-flex justify-content-between">
+                                        <small>¢100</small>
+                                        <span id="amountValue" class="fw-bold">¢2,000</span>
+                                        <small>¢10,000</small>
+                                    </div>
+                                </div>
+                                <div class="mb-3">
+                                    <label class="form-label">Loan Term</label>
+                                    <select class="form-select" id="loanTerm">
+                                        <option value="30">30 days</option>
+                                        <option value="90" selected>90 days</option>
+                                        <option value="180">180 days</option>
+                                        <option value="365">1 year</option>
+                                    </select>
+                                </div>
+                                <div class="alert alert-info">
+                                    <div class="d-flex justify-content-between">
+                                        <span>Monthly Payment:</span>
+                                        <span id="monthlyPayment" class="fw-bold">¢716.67</span>
+                                    </div>
+                                    <div class="d-flex justify-content-between">
+                                        <span>Total Interest:</span>
+                                        <span id="totalInterest" class="fw-bold">¢150</span>
+                                    </div>
+                                    <div class="d-flex justify-content-between">
+                                        <span>Total Repayment:</span>
+                                        <span id="totalRepayment" class="fw-bold">¢2,150</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Loan History -->
+                <div class="card mt-4">
+                    <div class="card-header">
+                        <h5 class="mb-0">Loan History</h5>
+                    </div>
+                    <div class="card-body">
+                        <div class="table-responsive">
+                            <table class="table table-hover">
+                                <thead>
+                                    <tr>
+                                        <th>Loan ID</th>
+                                        <th>Amount</th>
+                                        <th>Lender</th>
+                                        <th>Status</th>
+                                        <th>Date Completed</th>
+                                        <th>Rating</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr>
+                                        <td>LN-2023-045</td>
+                                        <td>¢5,000</td>
+                                        <td>Adenta Market Group</td>
+                                        <td><span class="badge bg-success">Paid</span></td>
+                                        <td>30 Apr 2024</td>
+                                        <td>
+                                            <i class="bi bi-star-fill text-warning"></i>
+                                            <i class="bi bi-star-fill text-warning"></i>
+                                            <i class="bi bi-star-fill text-warning"></i>
+                                            <i class="bi bi-star-fill text-warning"></i>
+                                            <i class="bi bi-star-fill text-warning"></i>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td>LN-2023-032</td>
+                                        <td>¢2,000</td>
+                                        <td>Tech Entrepreneurs</td>
+                                        <td><span class="badge bg-success">Paid</span></td>
+                                        <td>15 Feb 2024</td>
+                                        <td>
+                                            <i class="bi bi-star-fill text-warning"></i>
+                                            <i class="bi bi-star-fill text-warning"></i>
+                                            <i class="bi bi-star-fill text-warning"></i>
+                                            <i class="bi bi-star-fill text-warning"></i>
+                                            <i class="bi bi-star text-warning"></i>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td>LN-2023-018</td>
+                                        <td>¢1,500</td>
+                                        <td>Women Empowerment</td>
+                                        <td><span class="badge bg-success">Paid</span></td>
+                                        <td>30 Dec 2023</td>
+                                        <td>
+                                            <i class="bi bi-star-fill text-warning"></i>
+                                            <i class="bi bi-star-fill text-warning"></i>
+                                            <i class="bi bi-star-fill text-warning"></i>
+                                            <i class="bi bi-star-fill text-warning"></i>
+                                            <i class="bi bi-star-fill text-warning"></i>
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </main>
+        </div>
+    </div>
+
+    <!-- Apply Loan Modal -->
+    <div class="modal fade" id="applyLoanModal" tabindex="-1">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Apply for Loan</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <form id="applyLoanForm">
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                <label class="form-label">Loan Amount (¢)</label>
+                                <input type="number" class="form-control" min="100" max="10000" value="2000" required>
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <label class="form-label">Loan Purpose</label>
+                                <select class="form-select" required>
+                                    <option value="">Select purpose</option>
+                                    <option value="business">Business Expansion</option>
+                                    <option value="education">Education Fees</option>
+                                    <option value="medical">Medical Emergency</option>
+                                    <option value="personal">Personal Use</option>
+                                    <option value="agriculture">Agriculture</option>
+                                </select>
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <label class="form-label">Preferred Lender</label>
+                                <select class="form-select">
+                                    <option value="">Any Lender</option>
+                                    <option value="group">From My Groups</option>
+                                    <option value="individual">Individual Lenders</option>
+                                </select>
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <label class="form-label">Repayment Period</label>
+                                <select class="form-select" required>
+                                    <option value="30">30 days</option>
+                                    <option value="90" selected>90 days</option>
+                                    <option value="180">180 days</option>
+                                    <option value="365">1 year</option>
+                                </select>
+                            </div>
+                            <div class="col-12 mb-3">
+                                <label class="form-label">Loan Description</label>
+                                <textarea class="form-control" rows="3" placeholder="Describe what you need the loan for" required></textarea>
+                            </div>
+                            <div class="col-12 mb-3">
+                                <label class="form-label">Upload Supporting Documents (Optional)</label>
+                                <input type="file" class="form-control" multiple>
+                                <small class="text-muted">Upload business plan, invoices, or other supporting documents</small>
+                            </div>
+                            <div class="col-12">
+                                <div class="alert alert-info">
+                                    <h6><i class="bi bi-info-circle me-2"></i>Important Information</h6>
+                                    <small>
+                                        • Your credit score of 850 qualifies you for the best rates<br>
+                                        • Average approval time: 24-48 hours<br>
+                                        • Funds are disbursed directly to your mobile money wallet
+                                    </small>
+                                </div>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                    <button type="submit" form="applyLoanForm" class="btn btn-success">Submit Application</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        // Loan Calculator
+        const loanAmount = document.getElementById('loanAmount');
+        const amountValue = document.getElementById('amountValue');
+        const loanTerm = document.getElementById('loanTerm');
+        const monthlyPayment = document.getElementById('monthlyPayment');
+        const totalInterest = document.getElementById('totalInterest');
+        const totalRepayment = document.getElementById('totalRepayment');
+
+        function calculateLoan() {
+            const amount = parseInt(loanAmount.value);
+            const term = parseInt(loanTerm.value);
+            const interestRate = 0.15; // 15% annual
+            const monthlyRate = interestRate / 12;
+            
+            // Calculate monthly payment
+            const payment = amount * monthlyRate * Math.pow(1 + monthlyRate, term/30) / 
+                           (Math.pow(1 + monthlyRate, term/30) - 1);
+            const interest = payment * (term/30) - amount;
+            const total = amount + interest;
+            
+            amountValue.textContent = `¢${amount.toLocaleString()}`;
+            monthlyPayment.textContent = `¢${payment.toFixed(2)}`;
+            totalInterest.textContent = `¢${interest.toFixed(2)}`;
+            totalRepayment.textContent = `¢${total.toFixed(2)}`;
+        }
+
+        loanAmount.addEventListener('input', calculateLoan);
+        loanTerm.addEventListener('change', calculateLoan);
+        
+        // Initialize calculator
+        calculateLoan();
+
+        // Handle loan application
+        document.getElementById('applyLoanForm')?.addEventListener('submit', function(e) {
+            e.preventDefault();
+            alert('Loan application submitted successfully! You will receive a notification once approved.');
+            const modal = bootstrap.Modal.getInstance(document.getElementById('applyLoanModal'));
+            modal.hide();
+        });
+
+        // Handle quick loan buttons
+        document.querySelectorAll('.btn-outline-success, .btn-outline-primary, .btn-outline-warning').forEach(btn => {
+            btn.addEventListener('click', function() {
+                const amount = this.textContent.split(' - ')[0].replace('¢', '');
+                loanAmount.value = amount;
+                calculateLoan();
+                const modal = new bootstrap.Modal(document.getElementById('applyLoanModal'));
+                modal.show();
+            });
+        });
+    </script>
+</body>
+</html>

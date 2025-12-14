@@ -1,0 +1,670 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Notifications - Pesewa Micro-Lending</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.8.1/font/bootstrap-icons.css">
+    <style>
+        :root {
+            --primary-color: #2E8B57;
+            --secondary-color: #FFD700;
+        }
+        .notification-card {
+            border-radius: 12px;
+            border: none;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            margin-bottom: 15px;
+            transition: all 0.3s;
+            cursor: pointer;
+        }
+        .notification-card:hover {
+            transform: translateX(5px);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+        }
+        .notification-unread {
+            border-left: 4px solid var(--primary-color);
+            background-color: #f8fff9;
+        }
+        .notification-important {
+            border-left: 4px solid #dc3545;
+            background-color: #fff8f8;
+        }
+        .notification-type {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 18px;
+        }
+        .type-loan { background: linear-gradient(135deg, #2E8B57 0%, #1E5631 100%); }
+        .type-group { background: linear-gradient(135deg, #0d6efd 0%, #0b5ed7 100%); }
+        .type-payment { background: linear-gradient(135deg, #20c997 0%, #0ca678 100%); }
+        .type-alert { background: linear-gradient(135deg, #fd7e14 0%, #e8590c 100%); }
+        .type-system { background: linear-gradient(135deg, #6c757d 0%, #495057 100%); }
+        .notification-badge {
+            min-width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 12px;
+            margin-left: 5px;
+        }
+        .filter-tabs .nav-link {
+            border: none;
+            color: #6c757d;
+            padding: 10px 20px;
+            border-radius: 20px;
+            margin-right: 5px;
+        }
+        .filter-tabs .nav-link.active {
+            background-color: var(--primary-color);
+            color: white;
+        }
+        .settings-card {
+            border-radius: 12px;
+            border: none;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+        }
+        .channel-switch {
+            padding: 15px;
+            border-bottom: 1px solid #e9ecef;
+        }
+        .channel-switch:last-child {
+            border-bottom: none;
+        }
+        .notification-preview {
+            border-left: 3px solid #e9ecef;
+            padding-left: 15px;
+            margin-left: 15px;
+        }
+        .time-badge {
+            font-size: 12px;
+            padding: 2px 8px;
+            border-radius: 10px;
+            background: #f8f9fa;
+            color: #6c757d;
+        }
+    </style>
+</head>
+<body>
+    <div class="container-fluid">
+        <div class="row">
+            <!-- Sidebar -->
+            <nav class="col-md-3 col-lg-2 d-md-block sidebar collapse" style="background: linear-gradient(180deg, #1E5631 0%, #2E8B57 100%); color: white;">
+                <div class="position-sticky pt-3">
+                    <div class="d-flex align-items-center mb-4 px-3">
+                        <img src="https://via.placeholder.com/40x40" alt="Logo" class="me-2">
+                        <h5 class="mb-0">Pesewa</h5>
+                    </div>
+                    
+                    <ul class="nav flex-column">
+                        <li class="nav-item">
+                            <a class="nav-link" href="dashboard.html">
+                                <i class="bi bi-speedometer2 me-2"></i>
+                                Dashboard
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="profile.html">
+                                <i class="bi bi-person me-2"></i>
+                                Profile
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link active" href="notification.html">
+                                <i class="bi bi-bell me-2"></i>
+                                Notifications
+                                <span class="badge bg-danger float-end">12</span>
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="analytics.html">
+                                <i class="bi bi-graph-up me-2"></i>
+                                Analytics
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="dispute.html">
+                                <i class="bi bi-shield-exclamation me-2"></i>
+                                Disputes
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="transaction.html">
+                                <i class="bi bi-arrow-left-right me-2"></i>
+                                Transactions
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="documentation-upload.html">
+                                <i class="bi bi-cloud-arrow-up me-2"></i>
+                                Documents
+                            </a>
+                        </li>
+                    </ul>
+                </div>
+            </nav>
+
+            <!-- Main Content -->
+            <main class="col-md-9 ms-sm-auto col-lg-10 px-md-4 py-4">
+                <div class="d-flex justify-content-between align-items-center mb-4">
+                    <h2 class="h3">Notifications</h2>
+                    <div>
+                        <button class="btn btn-outline-secondary me-2" onclick="markAllAsRead()">
+                            <i class="bi bi-check-all me-1"></i>Mark All Read
+                        </button>
+                        <button class="btn btn-danger" onclick="clearAllNotifications()">
+                            <i class="bi bi-trash me-1"></i>Clear All
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Notification Stats -->
+                <div class="row g-3 mb-4">
+                    <div class="col-md-3">
+                        <div class="card border-0 bg-light">
+                            <div class="card-body">
+                                <div class="d-flex align-items-center">
+                                    <div class="bg-primary bg-opacity-25 p-3 rounded-circle me-3">
+                                        <i class="bi bi-envelope text-primary"></i>
+                                    </div>
+                                    <div>
+                                        <h6 class="text-muted mb-0">Unread</h6>
+                                        <h4 class="mb-0">12</h4>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="col-md-3">
+                        <div class="card border-0 bg-light">
+                            <div class="card-body">
+                                <div class="d-flex align-items-center">
+                                    <div class="bg-success bg-opacity-25 p-3 rounded-circle me-3">
+                                        <i class="bi bi-cash-coin text-success"></i>
+                                    </div>
+                                    <div>
+                                        <h6 class="text-muted mb-0">Loan Updates</h6>
+                                        <h4 class="mb-0">5</h4>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="col-md-3">
+                        <div class="card border-0 bg-light">
+                            <div class="card-body">
+                                <div class="d-flex align-items-center">
+                                    <div class="bg-warning bg-opacity-25 p-3 rounded-circle me-3">
+                                        <i class="bi bi-people text-warning"></i>
+                                    </div>
+                                    <div>
+                                        <h6 class="text-muted mb-0">Group Alerts</h6>
+                                        <h4 class="mb-0">3</h4>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="col-md-3">
+                        <div class="card border-0 bg-light">
+                            <div class="card-body">
+                                <div class="d-flex align-items-center">
+                                    <div class="bg-danger bg-opacity-25 p-3 rounded-circle me-3">
+                                        <i class="bi bi-exclamation-triangle text-danger"></i>
+                                    </div>
+                                    <div>
+                                        <h6 class="text-muted mb-0">Urgent</h6>
+                                        <h4 class="mb-0">2</h4>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Filter Tabs -->
+                <div class="card mb-4">
+                    <div class="card-body">
+                        <ul class="nav filter-tabs">
+                            <li class="nav-item">
+                                <a class="nav-link active" href="#" data-filter="all">All</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" href="#" data-filter="unread">Unread</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" href="#" data-filter="loan">Loans</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" href="#" data-filter="group">Groups</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" href="#" data-filter="payment">Payments</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" href="#" data-filter="system">System</a>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+
+                <div class="row">
+                    <!-- Notifications List -->
+                    <div class="col-lg-8">
+                        <!-- Unread Notifications -->
+                        <div class="mb-4">
+                            <h5 class="mb-3">Unread Notifications <span class="notification-badge bg-danger">12</span></h5>
+                            
+                            <!-- Notification 1 -->
+                            <div class="card notification-card notification-unread" data-type="loan" data-read="false">
+                                <div class="card-body">
+                                    <div class="d-flex align-items-start">
+                                        <div class="notification-type type-loan me-3">
+                                            <i class="bi bi-cash-coin"></i>
+                                        </div>
+                                        <div class="flex-grow-1">
+                                            <div class="d-flex justify-content-between">
+                                                <h6 class="mb-1">Loan Repayment Received</h6>
+                                                <span class="time-badge">10 minutes ago</span>
+                                            </div>
+                                            <p class="mb-1">Kofi Mensah has made a payment of ¢500 towards loan LN-2024-001.</p>
+                                            <div class="d-flex">
+                                                <button class="btn btn-sm btn-outline-success me-2" onclick="viewLoanDetails()">View Loan</button>
+                                                <button class="btn btn-sm btn-outline-primary" onclick="sendThankYou()">Send Thanks</button>
+                                            </div>
+                                        </div>
+                                        <div class="dropdown ms-2">
+                                            <button class="btn btn-link text-muted" data-bs-toggle="dropdown">
+                                                <i class="bi bi-three-dots-vertical"></i>
+                                            </button>
+                                            <ul class="dropdown-menu">
+                                                <li><a class="dropdown-item" href="#" onclick="markAsRead(this)">Mark as read</a></li>
+                                                <li><a class="dropdown-item" href="#">Archive</a></li>
+                                                <li><a class="dropdown-item text-danger" href="#">Delete</a></li>
+                                            </ul>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Notification 2 -->
+                            <div class="card notification-card notification-important" data-type="loan" data-read="false">
+                                <div class="card-body">
+                                    <div class="d-flex align-items-start">
+                                        <div class="notification-type type-alert me-3">
+                                            <i class="bi bi-exclamation-triangle"></i>
+                                        </div>
+                                        <div class="flex-grow-1">
+                                            <div class="d-flex justify-content-between">
+                                                <h6 class="mb-1">Loan Payment Due Tomorrow</h6>
+                                                <span class="time-badge">1 hour ago</span>
+                                            </div>
+                                            <p class="mb-1">Reminder: Payment of ¢300 for loan LN-2024-002 is due tomorrow.</p>
+                                            <div class="alert alert-warning py-2 mb-0">
+                                                <small><i class="bi bi-clock me-1"></i>Due date: 10 June 2024</small>
+                                            </div>
+                                        </div>
+                                        <button class="btn btn-sm btn-warning ms-2" onclick="makePayment()">Pay Now</button>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Notification 3 -->
+                            <div class="card notification-card notification-unread" data-type="group" data-read="false">
+                                <div class="card-body">
+                                    <div class="d-flex align-items-start">
+                                        <div class="notification-type type-group me-3">
+                                            <i class="bi bi-people"></i>
+                                        </div>
+                                        <div class="flex-grow-1">
+                                            <div class="d-flex justify-content-between">
+                                                <h6 class="mb-1">Group Meeting Reminder</h6>
+                                                <span class="time-badge">2 hours ago</span>
+                                            </div>
+                                            <p class="mb-1">Adenta Market Traders meeting scheduled for tomorrow at 10:00 AM.</p>
+                                            <small class="text-muted"><i class="bi bi-geo-alt me-1"></i>Adenta Market Conference Room</small>
+                                        </div>
+                                        <button class="btn btn-sm btn-outline-primary ms-2" onclick="rsvpMeeting()">RSVP</button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Read Notifications -->
+                        <div class="mb-4">
+                            <h5 class="mb-3">Earlier Notifications</h5>
+                            
+                            <!-- Notification 4 -->
+                            <div class="card notification-card" data-type="payment" data-read="true">
+                                <div class="card-body">
+                                    <div class="d-flex align-items-start">
+                                        <div class="notification-type type-payment me-3">
+                                            <i class="bi bi-arrow-left-right"></i>
+                                        </div>
+                                        <div class="flex-grow-1">
+                                            <div class="d-flex justify-content-between">
+                                                <h6 class="mb-1 text-muted">Payment Successful</h6>
+                                                <span class="time-badge">Yesterday</span>
+                                            </div>
+                                            <p class="mb-1 text-muted">Your payment of ¢1,000 to Tech Entrepreneurs group has been processed.</p>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Notification 5 -->
+                            <div class="card notification-card" data-type="system" data-read="true">
+                                <div class="card-body">
+                                    <div class="d-flex align-items-start">
+                                        <div class="notification-type type-system me-3">
+                                            <i class="bi bi-shield-check"></i>
+                                        </div>
+                                        <div class="flex-grow-1">
+                                            <div class="d-flex justify-content-between">
+                                                <h6 class="mb-1 text-muted">Account Verified</h6>
+                                                <span class="time-badge">2 days ago</span>
+                                            </div>
+                                            <p class="mb-1 text-muted">Your account verification has been completed successfully.</p>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Notification 6 -->
+                            <div class="card notification-card" data-type="loan" data-read="true">
+                                <div class="card-body">
+                                    <div class="d-flex align-items-start">
+                                        <div class="notification-type type-loan me-3">
+                                            <i class="bi bi-cash-stack"></i>
+                                        </div>
+                                        <div class="flex-grow-1">
+                                            <div class="d-flex justify-content-between">
+                                                <h6 class="mb-1 text-muted">Loan Application Approved</h6>
+                                                <span class="time-badge">3 days ago</span>
+                                            </div>
+                                            <p class="mb-1 text-muted">Your loan application for ¢2,000 has been approved by Kofi Mensah.</p>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Notification Settings -->
+                    <div class="col-lg-4">
+                        <div class="card settings-card">
+                            <div class="card-header">
+                                <h5 class="mb-0">Notification Settings</h5>
+                            </div>
+                            <div class="card-body">
+                                <!-- Email Notifications -->
+                                <div class="channel-switch">
+                                    <div class="d-flex justify-content-between align-items-center mb-2">
+                                        <div>
+                                            <h6 class="mb-0">Email Notifications</h6>
+                                            <small class="text-muted">kwame.appiah@example.com</small>
+                                        </div>
+                                        <div class="form-check form-switch">
+                                            <input class="form-check-input" type="checkbox" id="emailSwitch" checked>
+                                            <label class="form-check-label" for="emailSwitch"></label>
+                                        </div>
+                                    </div>
+                                    <div class="notification-preview">
+                                        <small class="text-muted">Frequency: Immediate</small>
+                                        <div class="form-check mt-2">
+                                            <input class="form-check-input" type="checkbox" id="emailLoans" checked>
+                                            <label class="form-check-label" for="emailLoans">Loan updates</label>
+                                        </div>
+                                        <div class="form-check">
+                                            <input class="form-check-input" type="checkbox" id="emailPayments" checked>
+                                            <label class="form-check-label" for="emailPayments">Payment alerts</label>
+                                        </div>
+                                        <div class="form-check">
+                                            <input class="form-check-input" type="checkbox" id="emailGroups">
+                                            <label class="form-check-label" for="emailGroups">Group notifications</label>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <!-- SMS Notifications -->
+                                <div class="channel-switch">
+                                    <div class="d-flex justify-content-between align-items-center mb-2">
+                                        <div>
+                                            <h6 class="mb-0">SMS Notifications</h6>
+                                            <small class="text-muted">024 123 4567</small>
+                                        </div>
+                                        <div class="form-check form-switch">
+                                            <input class="form-check-input" type="checkbox" id="smsSwitch" checked>
+                                            <label class="form-check-label" for="smsSwitch"></label>
+                                        </div>
+                                    </div>
+                                    <div class="notification-preview">
+                                        <small class="text-muted">Urgent alerts only</small>
+                                        <div class="form-check mt-2">
+                                            <input class="form-check-input" type="checkbox" id="smsUrgent" checked>
+                                            <label class="form-check-label" for="smsUrgent">Urgent loan alerts</label>
+                                        </div>
+                                        <div class="form-check">
+                                            <input class="form-check-input" type="checkbox" id="smsSecurity" checked>
+                                            <label class="form-check-label" for="smsSecurity">Security alerts</label>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <!-- Push Notifications -->
+                                <div class="channel-switch">
+                                    <div class="d-flex justify-content-between align-items-center mb-2">
+                                        <div>
+                                            <h6 class="mb-0">Push Notifications</h6>
+                                            <small class="text-muted">Browser & Mobile</small>
+                                        </div>
+                                        <div class="form-check form-switch">
+                                            <input class="form-check-input" type="checkbox" id="pushSwitch" checked>
+                                            <label class="form-check-label" for="pushSwitch"></label>
+                                        </div>
+                                    </div>
+                                    <div class="notification-preview">
+                                        <small class="text-muted">All device notifications</small>
+                                        <div class="form-check mt-2">
+                                            <input class="form-check-input" type="checkbox" id="pushAll" checked>
+                                            <label class="form-check-label" for="pushAll">All notifications</label>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <!-- Quiet Hours -->
+                                <div class="channel-switch">
+                                    <div class="d-flex justify-content-between align-items-center mb-2">
+                                        <div>
+                                            <h6 class="mb-0">Quiet Hours</h6>
+                                            <small class="text-muted">Do not disturb</small>
+                                        </div>
+                                        <div class="form-check form-switch">
+                                            <input class="form-check-input" type="checkbox" id="quietSwitch">
+                                            <label class="form-check-label" for="quietSwitch"></label>
+                                        </div>
+                                    </div>
+                                    <div class="notification-preview">
+                                        <div class="row">
+                                            <div class="col-6">
+                                                <label class="form-label small">From</label>
+                                                <input type="time" class="form-control form-control-sm" value="22:00" disabled>
+                                            </div>
+                                            <div class="col-6">
+                                                <label class="form-label small">To</label>
+                                                <input type="time" class="form-control form-control-sm" value="07:00" disabled>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="mt-3">
+                                    <button class="btn btn-success w-100" onclick="saveNotificationSettings()">
+                                        <i class="bi bi-save me-1"></i>Save Settings
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Notification Statistics -->
+                        <div class="card settings-card mt-4">
+                            <div class="card-header">
+                                <h5 class="mb-0">Notification Statistics</h5>
+                            </div>
+                            <div class="card-body">
+                                <div class="mb-3">
+                                    <small class="text-muted">Today</small>
+                                    <div class="d-flex justify-content-between">
+                                        <span>Received</span>
+                                        <span class="fw-bold">8</span>
+                                    </div>
+                                    <div class="d-flex justify-content-between">
+                                        <span>Read</span>
+                                        <span class="fw-bold">5</span>
+                                    </div>
+                                </div>
+                                <div class="mb-3">
+                                    <small class="text-muted">This Week</small>
+                                    <div class="d-flex justify-content-between">
+                                        <span>Total</span>
+                                        <span class="fw-bold">42</span>
+                                    </div>
+                                    <div class="d-flex justify-content-between">
+                                        <span>Loan alerts</span>
+                                        <span class="fw-bold">18</span>
+                                    </div>
+                                </div>
+                                <div class="mb-3">
+                                    <small class="text-muted">Response Rate</small>
+                                    <div class="progress" style="height: 8px;">
+                                        <div class="progress-bar bg-success" style="width: 75%"></div>
+                                    </div>
+                                    <small class="text-muted">75% of notifications acted upon within 24 hours</small>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </main>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        // Filter functionality
+        document.querySelectorAll('.filter-tabs .nav-link').forEach(tab => {
+            tab.addEventListener('click', function(e) {
+                e.preventDefault();
+                
+                // Update active tab
+                document.querySelectorAll('.filter-tabs .nav-link').forEach(t => t.classList.remove('active'));
+                this.classList.add('active');
+                
+                const filter = this.dataset.filter;
+                const notifications = document.querySelectorAll('.notification-card');
+                
+                notifications.forEach(notification => {
+                    if (filter === 'all') {
+                        notification.style.display = 'flex';
+                    } else if (filter === 'unread') {
+                        if (notification.dataset.read === 'false') {
+                            notification.style.display = 'flex';
+                        } else {
+                            notification.style.display = 'none';
+                        }
+                    } else if (notification.dataset.type === filter) {
+                        notification.style.display = 'flex';
+                    } else {
+                        notification.style.display = 'none';
+                    }
+                });
+            });
+        });
+
+        // Mark notification as read
+        function markAsRead(button) {
+            const notification = button.closest('.notification-card');
+            notification.classList.remove('notification-unread');
+            notification.dataset.read = 'true';
+            
+            // Update count
+            const unreadCount = document.querySelectorAll('.notification-card[data-read="false"]').length;
+            document.querySelectorAll('.notification-badge').forEach(badge => {
+                badge.textContent = unreadCount;
+            });
+            
+            alert('Notification marked as read');
+        }
+
+        // Mark all as read
+        function markAllAsRead() {
+            const unreadNotifications = document.querySelectorAll('.notification-card[data-read="false"]');
+            unreadNotifications.forEach(notification => {
+                notification.classList.remove('notification-unread');
+                notification.dataset.read = 'true';
+            });
+            
+            document.querySelectorAll('.notification-badge').forEach(badge => {
+                badge.textContent = '0';
+            });
+            
+            alert('All notifications marked as read');
+        }
+
+        // Clear all notifications
+        function clearAllNotifications() {
+            if (confirm('Are you sure you want to clear all notifications?')) {
+                const notifications = document.querySelectorAll('.notification-card');
+                notifications.forEach(notification => notification.remove());
+                
+                document.querySelectorAll('.notification-badge').forEach(badge => {
+                    badge.textContent = '0';
+                });
+                
+                alert('All notifications cleared');
+            }
+        }
+
+        // Action handlers
+        function viewLoanDetails() {
+            alert('Opening loan details...');
+        }
+
+        function sendThankYou() {
+            alert('Thank you message sent!');
+        }
+
+        function makePayment() {
+            alert('Redirecting to payment page...');
+        }
+
+        function rsvpMeeting() {
+            alert('RSVP sent for meeting!');
+        }
+
+        // Save notification settings
+        function saveNotificationSettings() {
+            alert('Notification settings saved successfully!');
+        }
+
+        // Toggle quiet hours switch
+        document.getElementById('quietSwitch')?.addEventListener('change', function() {
+            const timeInputs = this.closest('.channel-switch').querySelectorAll('input[type="time"]');
+            timeInputs.forEach(input => {
+                input.disabled = !this.checked;
+            });
+        });
+    </script>
+</body>
+</html>

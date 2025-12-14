@@ -1,0 +1,577 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Blacklist - Pesewa Micro-Lending</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.8.1/font/bootstrap-icons.css">
+    <style>
+        :root {
+            --primary-color: #2E8B57;
+            --secondary-color: #FFD700;
+        }
+        .blacklist-card {
+            border-radius: 12px;
+            border: none;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+        }
+        .user-avatar {
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            object-fit: cover;
+        }
+        .severity-low { border-left: 4px solid #ffc107; }
+        .severity-medium { border-left: 4px solid #fd7e14; }
+        .severity-high { border-left: 4px solid #dc3545; }
+        .severity-critical { border-left: 4px solid #6f42c1; }
+        .blacklist-badge {
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 12px;
+        }
+        .stats-card {
+            border-radius: 12px;
+            border: none;
+            color: white;
+        }
+        .stats-card.total { background: linear-gradient(135deg, #6c757d 0%, #495057 100%); }
+        .stats-card.active { background: linear-gradient(135deg, #dc3545 0%, #c82333 100%); }
+        .stats-card.pending { background: linear-gradient(135deg, #fd7e14 0%, #e8590c 100%); }
+        .stats-card.removed { background: linear-gradient(135deg, #20c997 0%, #0ca678 100%); }
+    </style>
+</head>
+<body>
+    <div class="container-fluid">
+        <div class="row">
+            <!-- Sidebar (Same as dashboard) -->
+            <nav class="col-md-3 col-lg-2 d-md-block sidebar collapse" style="background: linear-gradient(180deg, #1E5631 0%, #2E8B57 100%); color: white;">
+                <div class="position-sticky pt-3">
+                    <div class="d-flex align-items-center mb-4 px-3">
+                        <img src="https://via.placeholder.com/40x40" alt="Logo" class="me-2">
+                        <h5 class="mb-0">Pesewa</h5>
+                    </div>
+                    
+                    <ul class="nav flex-column">
+                        <li class="nav-item">
+                            <a class="nav-link" href="dashboard.html">
+                                <i class="bi bi-speedometer2 me-2"></i>
+                                Dashboard
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="groups.html">
+                                <i class="bi bi-people me-2"></i>
+                                Groups
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="lending.html">
+                                <i class="bi bi-cash-coin me-2"></i>
+                                Lending
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="borrowing.html">
+                                <i class="bi bi-wallet2 me-2"></i>
+                                Borrowing
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="ledger.html">
+                                <i class="bi bi-journal-text me-2"></i>
+                                Ledger
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link active" href="blacklist.html">
+                                <i class="bi bi-shield-exclamation me-2"></i>
+                                Blacklist
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="debt-collectors.html">
+                                <i class="bi bi-person-badge me-2"></i>
+                                Debt Collectors
+                            </a>
+                        </li>
+                    </ul>
+                </div>
+            </nav>
+
+            <!-- Main Content -->
+            <main class="col-md-9 ms-sm-auto col-lg-10 px-md-4 py-4">
+                <div class="d-flex justify-content-between align-items-center mb-4">
+                    <h2 class="h3">Blacklist Management</h2>
+                    <button class="btn btn-danger" data-bs-toggle="modal" data-bs-target="#addBlacklistModal">
+                        <i class="bi bi-plus-circle me-2"></i>Add to Blacklist
+                    </button>
+                </div>
+
+                <!-- Statistics -->
+                <div class="row g-3 mb-4">
+                    <div class="col-md-3">
+                        <div class="card stats-card total">
+                            <div class="card-body">
+                                <div class="d-flex align-items-center">
+                                    <div class="me-3">
+                                        <i class="bi bi-shield-exclamation fs-1"></i>
+                                    </div>
+                                    <div>
+                                        <h6 class="mb-0">Total Listed</h6>
+                                        <h3 class="mb-0">24</h3>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="col-md-3">
+                        <div class="card stats-card active">
+                            <div class="card-body">
+                                <div class="d-flex align-items-center">
+                                    <div class="me-3">
+                                        <i class="bi bi-person-x fs-1"></i>
+                                    </div>
+                                    <div>
+                                        <h6 class="mb-0">Active</h6>
+                                        <h3 class="mb-0">18</h3>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="col-md-3">
+                        <div class="card stats-card pending">
+                            <div class="card-body">
+                                <div class="d-flex align-items-center">
+                                    <div class="me-3">
+                                        <i class="bi bi-clock-history fs-1"></i>
+                                    </div>
+                                    <div>
+                                        <h6 class="mb-0">Pending Review</h6>
+                                        <h3 class="mb-0">4</h3>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="col-md-3">
+                        <div class="card stats-card removed">
+                            <div class="card-body">
+                                <div class="d-flex align-items-center">
+                                    <div class="me-3">
+                                        <i class="bi bi-person-check fs-1"></i>
+                                    </div>
+                                    <div>
+                                        <h6 class="mb-0">Removed</h6>
+                                        <h3 class="mb-0">2</h3>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Search and Filters -->
+                <div class="card blacklist-card mb-4">
+                    <div class="card-body">
+                        <div class="row">
+                            <div class="col-md-8">
+                                <div class="input-group">
+                                    <input type="text" class="form-control" placeholder="Search by name, phone, or ID...">
+                                    <button class="btn btn-outline-secondary" type="button">
+                                        <i class="bi bi-search"></i>
+                                    </button>
+                                </div>
+                            </div>
+                            <div class="col-md-4">
+                                <select class="form-select">
+                                    <option value="">All Severity</option>
+                                    <option value="low">Low</option>
+                                    <option value="medium">Medium</option>
+                                    <option value="high">High</option>
+                                    <option value="critical">Critical</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Blacklisted Users -->
+                <div class="card blacklist-card">
+                    <div class="card-header d-flex justify-content-between align-items-center">
+                        <h5 class="mb-0">Blacklisted Users</h5>
+                        <button class="btn btn-outline-secondary btn-sm">
+                            <i class="bi bi-download me-1"></i>Export List
+                        </button>
+                    </div>
+                    <div class="card-body">
+                        <div class="table-responsive">
+                            <table class="table table-hover">
+                                <thead>
+                                    <tr>
+                                        <th>User</th>
+                                        <th>Phone</th>
+                                        <th>Severity</th>
+                                        <th>Reason</th>
+                                        <th>Amount Owed</th>
+                                        <th>Date Listed</th>
+                                        <th>Reported By</th>
+                                        <th>Status</th>
+                                        <th>Actions</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <!-- Critical Severity -->
+                                    <tr class="severity-critical">
+                                        <td>
+                                            <div class="d-flex align-items-center">
+                                                <img src="https://via.placeholder.com/50" class="user-avatar me-3" alt="User">
+                                                <div>
+                                                    <h6 class="mb-0">Yaw Boateng</h6>
+                                                    <small class="text-muted">ID: BL-2024-001</small>
+                                                </div>
+                                            </div>
+                                        </td>
+                                        <td>0248765432</td>
+                                        <td>
+                                            <span class="blacklist-badge bg-danger">Critical</span>
+                                        </td>
+                                        <td>
+                                            <small>Multiple loan defaults, fraudulent activity, identity theft</small>
+                                        </td>
+                                        <td class="fw-bold text-danger">¢15,450</td>
+                                        <td>2024-03-15</td>
+                                        <td>
+                                            <small>3 lenders</small>
+                                        </td>
+                                        <td>
+                                            <span class="badge bg-danger">Active</span>
+                                        </td>
+                                        <td>
+                                            <div class="btn-group">
+                                                <button class="btn btn-sm btn-outline-primary">View</button>
+                                                <button class="btn btn-sm btn-outline-success" data-bs-toggle="modal" data-bs-target="#removeModal">Remove</button>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                    
+                                    <!-- High Severity -->
+                                    <tr class="severity-high">
+                                        <td>
+                                            <div class="d-flex align-items-center">
+                                                <img src="https://via.placeholder.com/50" class="user-avatar me-3" alt="User">
+                                                <div>
+                                                    <h6 class="mb-0">Akwasi Owusu</h6>
+                                                    <small class="text-muted">ID: BL-2024-002</small>
+                                                </div>
+                                            </div>
+                                        </td>
+                                        <td>0543219876</td>
+                                        <td>
+                                            <span class="blacklist-badge bg-danger">High</span>
+                                        </td>
+                                        <td>
+                                            <small>Consistent late payments, loan default, unresponsive</small>
+                                        </td>
+                                        <td class="fw-bold text-danger">¢8,200</td>
+                                        <td>2024-04-10</td>
+                                        <td>
+                                            <small>Adenta Market Group</small>
+                                        </td>
+                                        <td>
+                                            <span class="badge bg-warning">Pending Review</span>
+                                        </td>
+                                        <td>
+                                            <div class="btn-group">
+                                                <button class="btn btn-sm btn-outline-primary">View</button>
+                                                <button class="btn btn-sm btn-outline-warning">Verify</button>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                    
+                                    <!-- Medium Severity -->
+                                    <tr class="severity-medium">
+                                        <td>
+                                            <div class="d-flex align-items-center">
+                                                <img src="https://via.placeholder.com/50" class="user-avatar me-3" alt="User">
+                                                <div>
+                                                    <h6 class="mb-0">Esi Mensah</h6>
+                                                    <small class="text-muted">ID: BL-2024-003</small>
+                                                </div>
+                                            </div>
+                                        </td>
+                                        <td>0201234567</td>
+                                        <td>
+                                            <span class="blacklist-badge bg-warning">Medium</span>
+                                        </td>
+                                        <td>
+                                            <small>Multiple late payments, temporary financial hardship</small>
+                                        </td>
+                                        <td class="fw-bold text-danger">¢3,500</td>
+                                        <td>2024-05-05</td>
+                                        <td>
+                                            <small>Women Empowerment Group</small>
+                                        </td>
+                                        <td>
+                                            <span class="badge bg-success">Payment Plan</span>
+                                        </td>
+                                        <td>
+                                            <div class="btn-group">
+                                                <button class="btn btn-sm btn-outline-primary">View</button>
+                                                <button class="btn btn-sm btn-outline-info">Contact</button>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                    
+                                    <!-- Low Severity -->
+                                    <tr class="severity-low">
+                                        <td>
+                                            <div class="d-flex align-items-center">
+                                                <img src="https://via.placeholder.com/50" class="user-avatar me-3" alt="User">
+                                                <div>
+                                                    <h6 class="mb-0">Kofi Asante</h6>
+                                                    <small class="text-muted">ID: BL-2024-004</small>
+                                                </div>
+                                            </div>
+                                        </td>
+                                        <td>0276543210</td>
+                                        <td>
+                                            <span class="blacklist-badge bg-info">Low</span>
+                                        </td>
+                                        <td>
+                                            <small>First-time default, communication issues</small>
+                                        </td>
+                                        <td class="fw-bold text-danger">¢1,200</td>
+                                        <td>2024-05-20</td>
+                                        <td>
+                                            <small>Tech Entrepreneurs</small>
+                                        </td>
+                                        <td>
+                                            <span class="badge bg-info">Warning Issued</span>
+                                        </td>
+                                        <td>
+                                            <div class="btn-group">
+                                                <button class="btn btn-sm btn-outline-primary">View</button>
+                                                <button class="btn btn-sm btn-outline-secondary">Monitor</button>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Statistics Charts -->
+                <div class="row mt-4">
+                    <div class="col-lg-6">
+                        <div class="card blacklist-card">
+                            <div class="card-header">
+                                <h5 class="mb-0">Blacklist by Severity</h5>
+                            </div>
+                            <div class="card-body">
+                                <canvas id="severityChart" height="250"></canvas>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-lg-6">
+                        <div class="card blacklist-card">
+                            <div class="card-header">
+                                <h5 class="mb-0">Monthly Blacklist Activity</h5>
+                            </div>
+                            <div class="card-body">
+                                <canvas id="activityChart" height="250"></canvas>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </main>
+        </div>
+    </div>
+
+    <!-- Add to Blacklist Modal -->
+    <div class="modal fade" id="addBlacklistModal" tabindex="-1">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Add User to Blacklist</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <form id="addBlacklistForm">
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                <label class="form-label">User Phone Number</label>
+                                <input type="text" class="form-control" placeholder="e.g., 0241234567" required>
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <label class="form-label">User Name</label>
+                                <input type="text" class="form-control" placeholder="Enter full name" required>
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <label class="form-label">Severity Level</label>
+                                <select class="form-select" required>
+                                    <option value="">Select severity</option>
+                                    <option value="low">Low - First time default</option>
+                                    <option value="medium">Medium - Multiple issues</option>
+                                    <option value="high">High - Serious default</option>
+                                    <option value="critical">Critical - Fraudulent activity</option>
+                                </select>
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <label class="form-label">Amount Owed (¢)</label>
+                                <input type="number" class="form-control" placeholder="0.00" min="0" step="0.01">
+                            </div>
+                            <div class="col-12 mb-3">
+                                <label class="form-label">Reason for Blacklisting</label>
+                                <textarea class="form-control" rows="3" placeholder="Provide detailed reason..." required></textarea>
+                            </div>
+                            <div class="col-12 mb-3">
+                                <label class="form-label">Supporting Evidence</label>
+                                <input type="file" class="form-control" multiple>
+                                <small class="text-muted">Upload screenshots, documents, or other evidence</small>
+                            </div>
+                            <div class="col-12 mb-3">
+                                <div class="form-check">
+                                    <input class="form-check-input" type="checkbox" id="notifyUser">
+                                    <label class="form-check-label" for="notifyUser">
+                                        Notify user about blacklisting
+                                    </label>
+                                </div>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                    <button type="submit" form="addBlacklistForm" class="btn btn-danger">Add to Blacklist</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Remove from Blacklist Modal -->
+    <div class="modal fade" id="removeModal" tabindex="-1">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Remove from Blacklist</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <p>Are you sure you want to remove this user from the blacklist?</p>
+                    <div class="mb-3">
+                        <label class="form-label">Reason for Removal</label>
+                        <textarea class="form-control" rows="3" placeholder="Explain why this user should be removed..."></textarea>
+                    </div>
+                    <div class="form-check mb-3">
+                        <input class="form-check-input" type="checkbox" id="clearRecord">
+                        <label class="form-check-label" for="clearRecord">
+                            Clear all related records
+                        </label>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                    <button type="button" class="btn btn-success" onclick="removeFromBlacklist()">Remove</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script>
+        // Initialize charts
+        const severityCtx = document.getElementById('severityChart').getContext('2d');
+        const severityChart = new Chart(severityCtx, {
+            type: 'pie',
+            data: {
+                labels: ['Critical', 'High', 'Medium', 'Low'],
+                datasets: [{
+                    data: [2, 4, 8, 10],
+                    backgroundColor: ['#6f42c1', '#dc3545', '#fd7e14', '#ffc107']
+                }]
+            },
+            options: {
+                responsive: true,
+                plugins: {
+                    legend: {
+                        position: 'bottom',
+                    }
+                }
+            }
+        });
+
+        const activityCtx = document.getElementById('activityChart').getContext('2d');
+        const activityChart = new Chart(activityCtx, {
+            type: 'line',
+            data: {
+                labels: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun'],
+                datasets: [{
+                    label: 'New Blacklistings',
+                    data: [3, 5, 8, 4, 6, 2],
+                    borderColor: '#dc3545',
+                    backgroundColor: 'rgba(220, 53, 69, 0.1)',
+                    fill: true,
+                    tension: 0.4
+                }, {
+                    label: 'Removals',
+                    data: [1, 2, 1, 0, 1, 0],
+                    borderColor: '#20c997',
+                    backgroundColor: 'rgba(32, 201, 151, 0.1)',
+                    fill: true,
+                    tension: 0.4
+                }]
+            },
+            options: {
+                responsive: true,
+                plugins: {
+                    legend: {
+                        position: 'top',
+                    }
+                },
+                scales: {
+                    y: {
+                        beginAtZero: true
+                    }
+                }
+            }
+        });
+
+        // Handle blacklist form submission
+        document.getElementById('addBlacklistForm')?.addEventListener('submit', function(e) {
+            e.preventDefault();
+            alert('User added to blacklist successfully!');
+            const modal = bootstrap.Modal.getInstance(document.getElementById('addBlacklistModal'));
+            modal.hide();
+        });
+
+        function removeFromBlacklist() {
+            alert('User removed from blacklist!');
+            const modal = bootstrap.Modal.getInstance(document.getElementById('removeModal'));
+            modal.hide();
+        }
+
+        // Handle search functionality
+        document.querySelector('input[type="text"]').addEventListener('input', function(e) {
+            const searchTerm = e.target.value.toLowerCase();
+            const rows = document.querySelectorAll('tbody tr');
+            
+            rows.forEach(row => {
+                const text = row.textContent.toLowerCase();
+                if (text.includes(searchTerm)) {
+                    row.style.display = '';
+                } else {
+                    row.style.display = 'none';
+                }
+            });
+        });
+    </script>
+</body>
+</html>

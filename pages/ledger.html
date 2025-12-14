@@ -1,0 +1,511 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ledger - Pesewa Micro-Lending</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.8.1/font/bootstrap-icons.css">
+    <style>
+        :root {
+            --primary-color: #2E8B57;
+            --secondary-color: #FFD700;
+        }
+        .ledger-card {
+            border-radius: 12px;
+            border: none;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+        }
+        .transaction-positive {
+            border-left: 4px solid #2E8B57;
+        }
+        .transaction-negative {
+            border-left: 4px solid #dc3545;
+        }
+        .transaction-neutral {
+            border-left: 4px solid #6c757d;
+        }
+        .date-range {
+            background: #f8f9fa;
+            border-radius: 8px;
+            padding: 15px;
+        }
+        .stat-box {
+            padding: 15px;
+            border-radius: 8px;
+            text-align: center;
+        }
+        .income-box { background: #d4edda; }
+        .expense-box { background: #f8d7da; }
+        .balance-box { background: #d1ecf1; }
+        .filter-btn.active {
+            background-color: #2E8B57;
+            color: white;
+        }
+    </style>
+</head>
+<body>
+    <div class="container-fluid">
+        <div class="row">
+            <!-- Sidebar (Same as dashboard) -->
+            <nav class="col-md-3 col-lg-2 d-md-block sidebar collapse" style="background: linear-gradient(180deg, #1E5631 0%, #2E8B57 100%); color: white;">
+                <div class="position-sticky pt-3">
+                    <div class="d-flex align-items-center mb-4 px-3">
+                        <img src="https://via.placeholder.com/40x40" alt="Logo" class="me-2">
+                        <h5 class="mb-0">Pesewa</h5>
+                    </div>
+                    
+                    <ul class="nav flex-column">
+                        <li class="nav-item">
+                            <a class="nav-link" href="dashboard.html">
+                                <i class="bi bi-speedometer2 me-2"></i>
+                                Dashboard
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="groups.html">
+                                <i class="bi bi-people me-2"></i>
+                                Groups
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="lending.html">
+                                <i class="bi bi-cash-coin me-2"></i>
+                                Lending
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="borrowing.html">
+                                <i class="bi bi-wallet2 me-2"></i>
+                                Borrowing
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link active" href="ledger.html">
+                                <i class="bi bi-journal-text me-2"></i>
+                                Ledger
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="blacklist.html">
+                                <i class="bi bi-shield-exclamation me-2"></i>
+                                Blacklist
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="debt-collectors.html">
+                                <i class="bi bi-person-badge me-2"></i>
+                                Debt Collectors
+                            </a>
+                        </li>
+                    </ul>
+                </div>
+            </nav>
+
+            <!-- Main Content -->
+            <main class="col-md-9 ms-sm-auto col-lg-10 px-md-4 py-4">
+                <div class="d-flex justify-content-between align-items-center mb-4">
+                    <h2 class="h3">Transaction Ledger</h2>
+                    <div>
+                        <button class="btn btn-outline-success me-2">
+                            <i class="bi bi-download me-1"></i>Export CSV
+                        </button>
+                        <button class="btn btn-success" data-bs-toggle="modal" data-bs-target="#filterModal">
+                            <i class="bi bi-funnel me-1"></i>Filter
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Statistics -->
+                <div class="row g-3 mb-4">
+                    <div class="col-md-4">
+                        <div class="stat-box income-box">
+                            <h6 class="text-muted">Total Income</h6>
+                            <h3 class="text-success">¢12,450</h3>
+                            <small>This month</small>
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="stat-box expense-box">
+                            <h6 class="text-muted">Total Expenses</h6>
+                            <h3 class="text-danger">¢8,230</h3>
+                            <small>This month</small>
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="stat-box balance-box">
+                            <h6 class="text-muted">Net Balance</h6>
+                            <h3 class="text-info">¢4,220</h3>
+                            <small>Current balance</small>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Date Range & Filters -->
+                <div class="card ledger-card mb-4">
+                    <div class="card-body">
+                        <div class="row align-items-center">
+                            <div class="col-md-3">
+                                <div class="date-range">
+                                    <h6 class="mb-1">Date Range</h6>
+                                    <div class="input-group">
+                                        <input type="date" class="form-control" value="2024-05-01">
+                                        <span class="input-group-text">to</span>
+                                        <input type="date" class="form-control" value="2024-05-31">
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="d-flex flex-wrap gap-2">
+                                    <button class="btn btn-outline-secondary filter-btn active" data-filter="all">All</button>
+                                    <button class="btn btn-outline-secondary filter-btn" data-filter="income">Income</button>
+                                    <button class="btn btn-outline-secondary filter-btn" data-filter="expense">Expense</button>
+                                    <button class="btn btn-outline-secondary filter-btn" data-filter="loan">Loans</button>
+                                    <button class="btn btn-outline-secondary filter-btn" data-filter="group">Groups</button>
+                                </div>
+                            </div>
+                            <div class="col-md-3">
+                                <div class="input-group">
+                                    <input type="text" class="form-control" placeholder="Search transactions...">
+                                    <button class="btn btn-outline-secondary">
+                                        <i class="bi bi-search"></i>
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Transaction Ledger -->
+                <div class="card ledger-card">
+                    <div class="card-body">
+                        <div class="table-responsive">
+                            <table class="table table-hover">
+                                <thead>
+                                    <tr>
+                                        <th>Date</th>
+                                        <th>Description</th>
+                                        <th>Category</th>
+                                        <th>From/To</th>
+                                        <th>Amount</th>
+                                        <th>Balance</th>
+                                        <th>Status</th>
+                                        <th>Receipt</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <!-- Income Transaction -->
+                                    <tr class="transaction-positive" data-category="income">
+                                        <td>2024-05-28</td>
+                                        <td>
+                                            <div class="d-flex align-items-center">
+                                                <div class="bg-success bg-opacity-25 p-2 rounded-circle me-3">
+                                                    <i class="bi bi-arrow-down-circle text-success"></i>
+                                                </div>
+                                                <div>
+                                                    <h6 class="mb-0">Loan Repayment</h6>
+                                                    <small class="text-muted">Monthly installment</small>
+                                                </div>
+                                            </div>
+                                        </td>
+                                        <td><span class="badge bg-success">Income</span></td>
+                                        <td>Kofi Mensah</td>
+                                        <td class="text-success fw-bold">+¢500</td>
+                                        <td class="fw-bold">¢8,920</td>
+                                        <td><span class="badge bg-success">Completed</span></td>
+                                        <td>
+                                            <button class="btn btn-sm btn-outline-secondary">
+                                                <i class="bi bi-receipt"></i>
+                                            </button>
+                                        </td>
+                                    </tr>
+                                    
+                                    <!-- Expense Transaction -->
+                                    <tr class="transaction-negative" data-category="loan">
+                                        <td>2024-05-27</td>
+                                        <td>
+                                            <div class="d-flex align-items-center">
+                                                <div class="bg-danger bg-opacity-25 p-2 rounded-circle me-3">
+                                                    <i class="bi bi-arrow-up-circle text-danger"></i>
+                                                </div>
+                                                <div>
+                                                    <h6 class="mb-0">Loan Disbursement</h6>
+                                                    <small class="text-muted">To Ama Serwaa</small>
+                                                </div>
+                                            </div>
+                                        </td>
+                                        <td><span class="badge bg-danger">Loan</span></td>
+                                        <td>Ama Serwaa</td>
+                                        <td class="text-danger fw-bold">-¢2,000</td>
+                                        <td class="fw-bold">¢8,420</td>
+                                        <td><span class="badge bg-success">Completed</span></td>
+                                        <td>
+                                            <button class="btn btn-sm btn-outline-secondary">
+                                                <i class="bi bi-receipt"></i>
+                                            </button>
+                                        </td>
+                                    </tr>
+                                    
+                                    <!-- Group Transaction -->
+                                    <tr class="transaction-neutral" data-category="group">
+                                        <td>2024-05-25</td>
+                                        <td>
+                                            <div class="d-flex align-items-center">
+                                                <div class="bg-primary bg-opacity-25 p-2 rounded-circle me-3">
+                                                    <i class="bi bi-people text-primary"></i>
+                                                </div>
+                                                <div>
+                                                    <h6 class="mb-0">Group Contribution</h6>
+                                                    <small class="text-muted">Adenta Market Traders</small>
+                                                </div>
+                                            </div>
+                                        </td>
+                                        <td><span class="badge bg-primary">Group</span></td>
+                                        <td>Group Pool</td>
+                                        <td class="text-success fw-bold">+¢1,000</td>
+                                        <td class="fw-bold">¢10,420</td>
+                                        <td><span class="badge bg-success">Completed</span></td>
+                                        <td>
+                                            <button class="btn btn-sm btn-outline-secondary">
+                                                <i class="bi bi-receipt"></i>
+                                            </button>
+                                        </td>
+                                    </tr>
+                                    
+                                    <!-- Income Transaction -->
+                                    <tr class="transaction-positive" data-category="income">
+                                        <td>2024-05-24</td>
+                                        <td>
+                                            <div class="d-flex align-items-center">
+                                                <div class="bg-warning bg-opacity-25 p-2 rounded-circle me-3">
+                                                    <i class="bi bi-cash-coin text-warning"></i>
+                                                </div>
+                                                <div>
+                                                    <h6 class="mb-0">Interest Received</h6>
+                                                    <small class="text-muted">From loan LN-2023-045</small>
+                                                </div>
+                                            </div>
+                                        </td>
+                                        <td><span class="badge bg-warning">Interest</span></td>
+                                        <td>Esi Atta</td>
+                                        <td class="text-success fw-bold">+¢250</td>
+                                        <td class="fw-bold">¢9,420</td>
+                                        <td><span class="badge bg-success">Completed</span></td>
+                                        <td>
+                                            <button class="btn btn-sm btn-outline-secondary">
+                                                <i class="bi bi-receipt"></i>
+                                            </button>
+                                        </td>
+                                    </tr>
+                                    
+                                    <!-- Expense Transaction -->
+                                    <tr class="transaction-negative" data-category="expense">
+                                        <td>2024-05-22</td>
+                                        <td>
+                                            <div class="d-flex align-items-center">
+                                                <div class="bg-info bg-opacity-25 p-2 rounded-circle me-3">
+                                                    <i class="bi bi-credit-card text-info"></i>
+                                                </div>
+                                                <div>
+                                                    <h6 class="mb-0">Platform Fee</h6>
+                                                    <small class="text-muted">Monthly service charge</small>
+                                                </div>
+                                            </div>
+                                        </td>
+                                        <td><span class="badge bg-info">Fee</span></td>
+                                        <td>Pesewa Platform</td>
+                                        <td class="text-danger fw-bold">-¢50</td>
+                                        <td class="fw-bold">¢9,170</td>
+                                        <td><span class="badge bg-success">Completed</span></td>
+                                        <td>
+                                            <button class="btn btn-sm btn-outline-secondary">
+                                                <i class="bi bi-receipt"></i>
+                                            </button>
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                        
+                        <!-- Pagination -->
+                        <nav aria-label="Transaction pagination">
+                            <ul class="pagination justify-content-center">
+                                <li class="page-item disabled">
+                                    <a class="page-link" href="#">Previous</a>
+                                </li>
+                                <li class="page-item active"><a class="page-link" href="#">1</a></li>
+                                <li class="page-item"><a class="page-link" href="#">2</a></li>
+                                <li class="page-item"><a class="page-link" href="#">3</a></li>
+                                <li class="page-item">
+                                    <a class="page-link" href="#">Next</a>
+                                </li>
+                            </ul>
+                        </nav>
+                    </div>
+                </div>
+
+                <!-- Charts -->
+                <div class="row mt-4">
+                    <div class="col-lg-6">
+                        <div class="card ledger-card">
+                            <div class="card-header">
+                                <h5 class="mb-0">Income by Category</h5>
+                            </div>
+                            <div class="card-body">
+                                <canvas id="incomeChart" height="250"></canvas>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-lg-6">
+                        <div class="card ledger-card">
+                            <div class="card-header">
+                                <h5 class="mb-0">Expense by Category</h5>
+                            </div>
+                            <div class="card-body">
+                                <canvas id="expenseChart" height="250"></canvas>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </main>
+        </div>
+    </div>
+
+    <!-- Filter Modal -->
+    <div class="modal fade" id="filterModal" tabindex="-1">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Filter Transactions</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <form id="filterForm">
+                        <div class="mb-3">
+                            <label class="form-label">Transaction Type</label>
+                            <select class="form-select" multiple>
+                                <option value="income" selected>Income</option>
+                                <option value="expense" selected>Expense</option>
+                                <option value="loan" selected>Loans</option>
+                                <option value="group" selected>Groups</option>
+                            </select>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">Amount Range</label>
+                            <div class="row">
+                                <div class="col-6">
+                                    <input type="number" class="form-control" placeholder="Min" min="0">
+                                </div>
+                                <div class="col-6">
+                                    <input type="number" class="form-control" placeholder="Max" min="0">
+                                </div>
+                            </div>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">Status</label>
+                            <select class="form-select">
+                                <option value="">All Status</option>
+                                <option value="completed">Completed</option>
+                                <option value="pending">Pending</option>
+                                <option value="failed">Failed</option>
+                            </select>
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                    <button type="button" class="btn btn-success" onclick="applyFilters()">Apply Filters</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script>
+        // Initialize charts
+        const incomeCtx = document.getElementById('incomeChart').getContext('2d');
+        const incomeChart = new Chart(incomeCtx, {
+            type: 'doughnut',
+            data: {
+                labels: ['Loan Repayments', 'Group Contributions', 'Interest', 'Other'],
+                datasets: [{
+                    data: [65, 20, 10, 5],
+                    backgroundColor: ['#2E8B57', '#FFD700', '#1E5631', '#6c757d']
+                }]
+            },
+            options: {
+                responsive: true,
+                plugins: {
+                    legend: {
+                        position: 'bottom',
+                    }
+                }
+            }
+        });
+
+        const expenseCtx = document.getElementById('expenseChart').getContext('2d');
+        const expenseChart = new Chart(expenseCtx, {
+            type: 'bar',
+            data: {
+                labels: ['Loans Given', 'Group Payments', 'Fees', 'Other'],
+                datasets: [{
+                    label: 'Amount (¢)',
+                    data: [8000, 2000, 230, 500],
+                    backgroundColor: '#2E8B57'
+                }]
+            },
+            options: {
+                responsive: true,
+                scales: {
+                    y: {
+                        beginAtZero: true,
+                        ticks: {
+                            callback: function(value) {
+                                return '¢' + value.toLocaleString();
+                            }
+                        }
+                    }
+                }
+            }
+        });
+
+        // Filter functionality
+        document.querySelectorAll('.filter-btn').forEach(btn => {
+            btn.addEventListener('click', function() {
+                document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+                this.classList.add('active');
+                
+                const filter = this.dataset.filter;
+                filterTransactions(filter);
+            });
+        });
+
+        function filterTransactions(filter) {
+            const rows = document.querySelectorAll('tbody tr');
+            rows.forEach(row => {
+                if (filter === 'all' || row.dataset.category === filter) {
+                    row.style.display = '';
+                } else {
+                    row.style.display = 'none';
+                }
+            });
+        }
+
+        function applyFilters() {
+            alert('Filters applied successfully!');
+            const modal = bootstrap.Modal.getInstance(document.getElementById('filterModal'));
+            modal.hide();
+        }
+
+        // Handle receipt button clicks
+        document.querySelectorAll('.btn-outline-secondary').forEach(btn => {
+            if (btn.querySelector('.bi-receipt')) {
+                btn.addEventListener('click', function() {
+                    alert('Downloading receipt...');
+                });
+            }
+        });
+    </script>
+</body>
+</html>
